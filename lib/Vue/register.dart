@@ -157,6 +157,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           _firstNameController.text,
                           _emailController.text,
                           _passwordController.text,
+                          _confirmPasswordController.text,
                           _addressController.text,
                           _ageController.text,
                           _motivationValue);
