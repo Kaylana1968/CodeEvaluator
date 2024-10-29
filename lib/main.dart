@@ -1,3 +1,4 @@
+import 'package:code_evaluator/Vue/test.dart';
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
@@ -25,6 +26,12 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
+        initialRoute: '/test',
+        routes: {
+          "/register": (context) => const RegistrationPage(title: "Register"),
+          "/login": (context) => const LoginPage(title: "Log in"),
+          "/profile": (context) => const ProfilePage(title: "profile"),
+          "/test": (context) => const TestPage(title: "Test")
         initialRoute: '/register',
         routes: {
           "/register": (context) => FutureBuilder<mongo.Db>(
@@ -45,7 +52,24 @@ class MyApp extends StatelessWidget {
               return const CircularProgressIndicator();
             },
           ),
-          "/profile": (context) => const ProfilePage(title: "profile")
+          "/profile": (context) => FutureBuilder<mongo.Db>(
+            future: db,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return ProfilePage(title: "Profile", db: snapshot.data!);
+              }
+              return const CircularProgressIndicator();
+            },
+          ),
+          "/test": (context) => FutureBuilder<mongo.Db>(
+            future: db,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return TestPage(title: "Test", db: snapshot.data!);
+              }
+              return const CircularProgressIndicator();
+            },
+          ),
         });
   }
 }
