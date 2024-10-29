@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Controller/register.dart';
+import '../Model/User.dart';
+import '../Controller/database.dart';
 
 const List<String> motivations = [
   "Poursuite d'études",
@@ -8,9 +11,10 @@ const List<String> motivations = [
 ];
 
 class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({super.key, required this.title});
+  const RegistrationPage({super.key, required this.title, required this.db});
 
   final String title;
+  final mongo.Db db;
 
   @override
   State<RegistrationPage> createState() => _RegistrationPageState();
@@ -24,6 +28,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
   String motivationValue = motivations.first;
+
 
   Widget formInput() {
     return Column(
@@ -92,6 +97,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final Database database = Database();
+    Map<String, dynamic> result;
+    User newUser;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -106,14 +114,18 @@ class _RegistrationPageState extends State<RegistrationPage> {
               const SizedBox(height: 8.0),
               ElevatedButton(
                   child: const Text("Submit"),
-                  onPressed: () {
-                    register(
-                        lastNameController.text,
-                        firstNameController.text,
-                        emailController.text,
-                        addressController.text,
-                        ageController.text,
-                        motivationValue);
+                  onPressed: () async {
+                    newUser = User(lastNameController.text, firstNameController.text, passwordController.text, ageController.hashCode, emailController.text, addressController.text, motivationValue, false);
+                    result = await database.insertUser(widget.db, newUser);
+                    if (result['success']) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("${result['message']}")),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("${result['message']}")),
+                      );
+                    }
                   }),
               ElevatedButton(
                   child: const Text('Log in'),
