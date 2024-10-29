@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: '/profile',
+        initialRoute: '/register',
         routes: {
           "/register": (context) => const RegistrationPage(title: "Register"),
           "/login": (context) => const LoginPage(title: "Log in"),

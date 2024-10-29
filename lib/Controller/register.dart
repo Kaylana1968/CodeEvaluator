@@ -2,6 +2,7 @@ void register(
   String lastName,
   String firstName,
   String email,
+  String password,
   String address,
   String age,
   String motivation,
