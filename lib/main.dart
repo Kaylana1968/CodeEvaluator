@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Vue/register.dart';
 import 'Vue/login.dart';
+import 'Vue/profile.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,10 +20,11 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: '/register',
+        initialRoute: '/profile',
         routes: {
           "/register": (context) => const RegistrationPage(title: "Register"),
-          "/login": (context) => const LoginPage(title: "Log in")
+          "/login": (context) => const LoginPage(title: "Log in"),
+          "/profile": (context) => const profilePage(title: "profile")
         });
   }
 }
