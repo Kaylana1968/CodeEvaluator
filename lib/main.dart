@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'Vue/register.dart';
+import 'Vue/Home.dart';
 import 'Vue/login.dart';
 import 'Vue/profile.dart';
 import 'Controller/database.dart';
@@ -24,11 +25,12 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: '/profile',
+        initialRoute: '/Home',
         routes: {
           "/register": (context) => const RegistrationPage(title: "Register"),
           "/login": (context) => const LoginPage(title: "Log in"),
-          "/profile": (context) => const ProfilePage(title: "profile")
+          "/profile": (context) => const ProfilePage(title: "profile"),
+          "/Home": (context) => const HomePage(title: "Home")
         });
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../Model/User.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key, required this.title});
 
@@ -10,16 +12,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
 
-  String lastName = "monNom";
-  String firstName = "monPrenom";
-  int age = 20;
-  String email = "monMail@gmail.com";
-  String address = "maMaison";
-  String motivation = "maMotivation";
-
+  User user = User("monNom","monPrenom","password",4,"monMail@gmail.com","maMaison","maMotivation",false);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +25,7 @@ class _ProfilePageState extends State<ProfilePage> {
           width: double.infinity,
           margin: const EdgeInsets.all(16.0),
           child: Card(
-              margin: EdgeInsets.all(10.0),
+              margin: const EdgeInsets.all(10.0),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -42,14 +36,16 @@ class _ProfilePageState extends State<ProfilePage> {
                       Icons.person,
                       size: 50,
                     ),
-                    Text("$firstName $lastName"),
-                    Text(age.toString()),
-                    Text(address),
-                    Text(email),
-                    Text(motivation),
+                    Text("${user.firstName} ${user.lastName}"),
+                    Text(user.age.toString()),
+                    Text(user.address),
+                    Text(user.email),
+                    Text(user.motivation),
                   ],
                 ),
-              ))),
+              )
+          )
+      ),
     );
   }
 }
