@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'Vue/add_test.dart';
 import 'Vue/register.dart';
 import 'Vue/login.dart';
 import 'Vue/profile.dart';
@@ -24,11 +25,12 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: '/profile',
+        initialRoute: '/add-test',
         routes: {
           "/register": (context) => const RegistrationPage(title: "Register"),
           "/login": (context) => const LoginPage(title: "Log in"),
-          "/profile": (context) => const ProfilePage(title: "profile")
+          "/profile": (context) => const ProfilePage(title: "profile"),
+          "/add-test": (context) => const AddTestPage(title: "Add a test")
         });
   }
 }
