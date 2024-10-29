@@ -11,8 +11,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   Widget formInput() {
     return Column(
@@ -23,14 +24,14 @@ class _LoginPageState extends State<LoginPage> {
             labelText: "Email",
           ),
           keyboardType: TextInputType.emailAddress,
-          controller: emailController,
+          controller: _emailController,
           validator: (value) => value!.isEmpty ? 'Enter your email' : null,
         ),
         TextFormField(
           decoration: const InputDecoration(
             labelText: "Password",
           ),
-          controller: passwordController,
+          controller: _passwordController,
           validator: (value) => value!.isEmpty ? 'Enter your password' : null,
         ),
       ],
@@ -49,12 +50,18 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Form(child: formInput()),
+              Form(key: _formKey, child: formInput()),
               const SizedBox(height: 8.0),
               ElevatedButton(
                   child: const Text("Submit"),
                   onPressed: () {
-                    login(emailController.text, passwordController.text);
+                    if (_formKey.currentState!.validate()) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Registering')),
+                      );
+
+                      login(_emailController.text, _passwordController.text);
+                    }
                   }),
               ElevatedButton(
                 child: const Text('Register'),
