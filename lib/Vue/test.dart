@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
-
+import '../Controller/header.dart';
 const List<String> category = [
   "Java",
   "Algorithmic",
@@ -23,10 +23,7 @@ class _TestPageState extends State<TestPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-    title: Text(widget.title),
-    ),
+        appBar: headerDisplay(context, widget.title),
         body: Center(
           child: 
             Column(
@@ -48,7 +45,7 @@ class _TestPageState extends State<TestPage> {
                 ),
                 ElevatedButton(
                     child: const Text('Start'),
-                    onPressed: () => ()
+                    onPressed: () => (Navigator.pushNamed(context, '/evaluation', arguments: categoryValue))
                 )
               ],
             )
