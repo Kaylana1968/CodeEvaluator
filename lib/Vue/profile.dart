@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
+import '../Model/User.dart';
 
 const List<String> motivations = [
   "Poursuite d'études",
@@ -7,7 +9,7 @@ const List<String> motivations = [
 ];
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key, required this.title});
+  const ProfilePage({super.key, required this.title, required mongo.Db db});
 
   final String title;
 
@@ -20,12 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController passwordController = TextEditingController();
   String motivationValue = motivations.first;
 
-  String lastName = "monNom";
-  String firstName = "monPrenom";
-  int age = 20;
-  String email = "monMail@gmail.com";
-  String address = "maMaison";
-  String motivation = "maMotivation";
+  User user = User("monNom","monPrenom","password",4,"monMail@gmail.com","maMaison","maMotivation",false);
 
   Widget modifyAddress() {
     return Column(children: [
@@ -76,7 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
         // width: double.infinity,
         // margin: const EdgeInsets.all(16.0),
           children: [ Card(
-              margin: EdgeInsets.all(10.0),
+              margin: const EdgeInsets.all(10.0),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -87,11 +84,11 @@ class _ProfilePageState extends State<ProfilePage> {
                       Icons.person,
                       size: 50,
                     ),
-                    Text("$firstName $lastName"),
-                    Text(age.toString()),
-                    Text(address),
-                    Text(email),
-                    Text(motivation),
+                    Text("${user.firstName} ${user.lastName}"),
+                    Text(user.age.toString()),
+                    Text(user.address),
+                    Text(user.email),
+                    Text(user.motivation),
                   ],
                 ),
               )

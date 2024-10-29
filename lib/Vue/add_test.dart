@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Model/Question.dart';
 import '../Controller/add_test.dart';
 
 const List<String> categories = ['Flutter', 'Java', 'Python', 'Javascript'];
 
 class AddTestPage extends StatefulWidget {
-  const AddTestPage({super.key, required this.title});
+  const AddTestPage({super.key, required this.title, required this.db});
 
   final String title;
+  final mongo.Db db;
 
   @override
   State<AddTestPage> createState() => _AddTestPageState();

@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
+import '../Controller/database.dart';
 import '../Controller/login.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, required this.title});
+  const LoginPage({super.key, required this.title, required this.db});
 
   final String title;
+  final mongo.Db db;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   Widget formInput() {
     return Column(
@@ -23,14 +27,14 @@ class _LoginPageState extends State<LoginPage> {
             labelText: "Email",
           ),
           keyboardType: TextInputType.emailAddress,
-          controller: emailController,
+          controller: _emailController,
           validator: (value) => value!.isEmpty ? 'Enter your email' : null,
         ),
         TextFormField(
           decoration: const InputDecoration(
             labelText: "Password",
           ),
-          controller: passwordController,
+          controller: _passwordController,
           validator: (value) => value!.isEmpty ? 'Enter your password' : null,
         ),
       ],
@@ -39,6 +43,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final Database database = Database();
+    Map<String, dynamic> result;
+    mongo.ObjectId userId;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -49,12 +56,20 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Form(child: formInput()),
+              Form(key: _formKey, child: formInput()),
               const SizedBox(height: 8.0),
               ElevatedButton(
                   child: const Text("Submit"),
-                  onPressed: () {
-                    login(emailController.text, passwordController.text);
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()){
+                        result = await database.getUser(widget.db, _emailController.text, _passwordController.text);
+                        if (result['success']) {
+                            userId = result['data'];
+                        } 
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("${result['message']}")),
+                        );          
+                    }
                   }),
               ElevatedButton(
                 child: const Text('Register'),
