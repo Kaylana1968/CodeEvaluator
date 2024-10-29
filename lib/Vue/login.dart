@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: const Text("Submit"),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()){
-                        result = await database.getUser(widget.db, emailController.text, passwordController.text);
+                        result = await database.getUser(widget.db, _emailController.text, _passwordController.text);
                         if (result['success']) {
                             userId = result['data'];
                         } 

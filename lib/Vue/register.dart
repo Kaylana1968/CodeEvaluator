@@ -156,7 +156,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   child: const Text("Submit"),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      newUser = User(lastNameController.text, firstNameController.text, passwordController.text, ageController.hashCode, emailController.text, addressController.text, motivationValue, false);
+                      newUser = User(_lastNameController.text, _firstNameController.text, _passwordController.text, _ageController.hashCode, _emailController.text, _addressController.text, _motivationValue, false);
                       result = await database.insertUser(widget.db, newUser);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text("${result['message']}")),
