@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Controller/register.dart';
+import '../Model/User.dart';
+import '../Controller/database.dart';
 
 const List<String> motivations = [
   "Poursuite d'études",
@@ -8,9 +11,10 @@ const List<String> motivations = [
 ];
 
 class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({super.key, required this.title});
+  const RegistrationPage({super.key, required this.title, required this.db});
 
   final String title;
+  final mongo.Db db;
 
   @override
   State<RegistrationPage> createState() => _RegistrationPageState();
@@ -27,6 +31,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   String _motivationValue = motivations.first;
+
 
   Widget formInput() {
     return Column(
@@ -132,6 +137,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final Database database = Database();
+    Map<String, dynamic> result;
+    User newUser;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -146,21 +154,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
               const SizedBox(height: 8.0),
               ElevatedButton(
                   child: const Text("Submit"),
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
+                      newUser = User(lastNameController.text, firstNameController.text, passwordController.text, ageController.hashCode, emailController.text, addressController.text, motivationValue, false);
+                      result = await database.insertUser(widget.db, newUser);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Registering')),
+                        SnackBar(content: Text("${result['message']}")),
                       );
-
-                      register(
-                          _lastNameController.text,
-                          _firstNameController.text,
-                          _emailController.text,
-                          _passwordController.text,
-                          _confirmPasswordController.text,
-                          _addressController.text,
-                          _ageController.text,
-                          _motivationValue);
                     }
                   }),
               ElevatedButton(

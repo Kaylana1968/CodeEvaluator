@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
 import 'Vue/register.dart';
 import 'Vue/login.dart';
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Database database = Database();
-    database.connectToDatabase();
+    var db = database.connectToDatabase();
 
     return MaterialApp(
         title: 'Flutter Demo',
@@ -26,8 +27,24 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: '/register',
         routes: {
-          "/register": (context) => const RegistrationPage(title: "Register"),
-          "/login": (context) => const LoginPage(title: "Log in"),
+          "/register": (context) => FutureBuilder<mongo.Db>(
+            future: db,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return RegistrationPage(title: "Register", db: snapshot.data!);
+              }
+              return const CircularProgressIndicator();
+            },
+          ),
+          "/login": (context) => FutureBuilder<mongo.Db>(
+            future: db,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return LoginPage(title: "Login", db: snapshot.data!);
+              }
+              return const CircularProgressIndicator();
+            },
+          ),
           "/profile": (context) => const ProfilePage(title: "profile")
         });
   }
