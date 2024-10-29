@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
 const List<String> motivations = [
   "Poursuite d'études",
@@ -7,7 +8,7 @@ const List<String> motivations = [
 ];
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key, required this.title});
+  const ProfilePage({super.key, required this.title, required mongo.Db db});
 
   final String title;
 
@@ -76,7 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
         // width: double.infinity,
         // margin: const EdgeInsets.all(16.0),
           children: [ Card(
-              margin: EdgeInsets.all(10.0),
+              margin: const EdgeInsets.all(10.0),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(

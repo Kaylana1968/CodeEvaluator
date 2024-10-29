@@ -28,12 +28,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: '/test',
         routes: {
-          "/register": (context) => const RegistrationPage(title: "Register"),
-          "/login": (context) => const LoginPage(title: "Log in"),
-          "/profile": (context) => const ProfilePage(title: "profile"),
-          "/test": (context) => const TestPage(title: "Test")
-        initialRoute: '/register',
-        routes: {
           "/register": (context) => FutureBuilder<mongo.Db>(
             future: db,
             builder: (context, snapshot) {

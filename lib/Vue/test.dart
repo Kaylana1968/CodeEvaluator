@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
 const List<String> category = [
   "Java",
@@ -7,7 +8,7 @@ const List<String> category = [
 ];
 
 class TestPage extends StatefulWidget {
-const TestPage({super.key, required this.title});
+const TestPage({super.key, required this.title, required mongo.Db db});
 
 final String title;
 
