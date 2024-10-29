@@ -21,13 +21,16 @@ class RegistrationPage extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
-  final TextEditingController ageController = TextEditingController();
-  String motivationValue = motivations.first;
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  String _motivationValue = motivations.first;
 
 
   Widget formInput() {
@@ -39,14 +42,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
           decoration: const InputDecoration(
             labelText: "Last name",
           ),
-          controller: lastNameController,
+          controller: _lastNameController,
           validator: (value) => value!.isEmpty ? 'Enter your last name' : null,
         ),
         TextFormField(
           decoration: const InputDecoration(
             labelText: "First name",
           ),
-          controller: firstNameController,
+          controller: _firstNameController,
           validator: (value) => value!.isEmpty ? 'Enter your first name' : null,
         ),
         TextFormField(
@@ -54,34 +57,71 @@ class _RegistrationPageState extends State<RegistrationPage> {
             labelText: "Email",
           ),
           keyboardType: TextInputType.emailAddress,
-          controller: emailController,
-          validator: (value) => value!.isEmpty ? 'Enter your email' : null,
+          controller: _emailController,
+          validator: (value) {
+            final emailRegex =
+                RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+
+            if (value!.isEmpty) {
+              return 'Enter your email';
+            } else if (!emailRegex.hasMatch(value)) {
+              return 'Enter a valid email';
+            }
+
+            return null;
+          },
         ),
         TextFormField(
-          decoration: const InputDecoration(
-            labelText: "Password",
-          ),
-          controller: passwordController,
-          validator: (value) => value!.isEmpty ? 'Enter your password' : null,
-        ),
+            decoration: const InputDecoration(
+              labelText: "Password",
+            ),
+            controller: _passwordController,
+            validator: (value) {
+              final passwordRegex = RegExp(
+                  r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$");
+
+              if (value!.isEmpty) {
+                return 'Enter your password';
+              } else if (!passwordRegex.hasMatch(value)) {
+                return 'Enter a better password';
+              }
+
+              return null;
+            }),
+        TextFormField(
+            decoration: const InputDecoration(
+              labelText: "Confirm password",
+            ),
+            controller: _confirmPasswordController,
+            validator: (value) => value!.isEmpty ? 'Enter your address' : null),
         TextFormField(
           decoration: const InputDecoration(
             labelText: "Address",
           ),
-          controller: addressController,
+          controller: _addressController,
           validator: (value) => value!.isEmpty ? 'Enter your address' : null,
         ),
         TextFormField(
             decoration: const InputDecoration(
               labelText: "Age",
             ),
-            controller: ageController,
+            controller: _ageController,
             keyboardType: TextInputType.number,
-            validator: (value) => value!.isEmpty ? 'Enter your age' : null),
+            validator: (value) {
+              final numberRegex = RegExp(r"^\d+$");
+
+              if (value!.isEmpty) {
+                return 'Enter your age';
+              } else if (!numberRegex.hasMatch(value)) {
+                return "Enter a number";
+              }
+
+              return null;
+            }),
         const SizedBox(height: 8.0),
         DropdownButton(
             isExpanded: true,
-            value: motivationValue,
+            value: _motivationValue,
             items: motivations.map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
@@ -89,7 +129,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               );
             }).toList(),
             onChanged: (value) => setState(() {
-                  motivationValue = value!;
+                  _motivationValue = value!;
                 }))
       ],
     );
@@ -110,18 +150,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Form(child: formInput()),
+              Form(key: _formKey, child: formInput()),
               const SizedBox(height: 8.0),
               ElevatedButton(
                   child: const Text("Submit"),
                   onPressed: () async {
-                    newUser = User(lastNameController.text, firstNameController.text, passwordController.text, ageController.hashCode, emailController.text, addressController.text, motivationValue, false);
-                    result = await database.insertUser(widget.db, newUser);
-                    if (result['success']) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("${result['message']}")),
-                      );
-                    } else {
+                    if (_formKey.currentState!.validate()) {
+                      newUser = User(lastNameController.text, firstNameController.text, passwordController.text, ageController.hashCode, emailController.text, addressController.text, motivationValue, false);
+                      result = await database.insertUser(widget.db, newUser);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text("${result['message']}")),
                       );
