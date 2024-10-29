@@ -1,3 +1,4 @@
+import 'package:code_evaluator/Vue/test.dart';
 import 'package:flutter/material.dart';
 
 import 'Vue/register.dart';
@@ -24,11 +25,12 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: '/profile',
+        initialRoute: '/test',
         routes: {
           "/register": (context) => const RegistrationPage(title: "Register"),
           "/login": (context) => const LoginPage(title: "Log in"),
-          "/profile": (context) => const ProfilePage(title: "profile")
+          "/profile": (context) => const ProfilePage(title: "profile"),
+          "/test": (context) => const TestPage(title: "Test")
         });
   }
 }
