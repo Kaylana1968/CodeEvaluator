@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'Vue/register.dart';
 import 'Vue/Home.dart';
 import 'Vue/login.dart';
 import 'Vue/profile.dart';
 import 'Controller/database.dart';
+import 'Vue/test.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: '/Home',
+        initialRoute: '/',
         routes: {
           "/register": (context) => FutureBuilder<mongo.Db>(
             future: db,
@@ -59,6 +60,15 @@ class MyApp extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 return TestPage(title: "Test", db: snapshot.data!);
+              }
+              return const CircularProgressIndicator();
+            },
+          ),
+          "/": (context) => FutureBuilder<mongo.Db>(
+            future: db,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return HomePage(title: "Home", db: snapshot.data!);
               }
               return const CircularProgressIndicator();
             },
