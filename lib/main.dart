@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Database database = Database();
-    database.connectToDatabase();
+    var db = database.connectToDatabase();
 
     return MaterialApp(
         title: 'Flutter Demo',
@@ -27,10 +27,42 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: '/Home',
         routes: {
-          "/register": (context) => const RegistrationPage(title: "Register"),
-          "/login": (context) => const LoginPage(title: "Log in"),
-          "/profile": (context) => const ProfilePage(title: "profile"),
-          "/Home": (context) => const HomePage(title: "Home")
+          "/register": (context) => FutureBuilder<mongo.Db>(
+            future: db,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return RegistrationPage(title: "Register", db: snapshot.data!);
+              }
+              return const CircularProgressIndicator();
+            },
+          ),
+          "/login": (context) => FutureBuilder<mongo.Db>(
+            future: db,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return LoginPage(title: "Login", db: snapshot.data!);
+              }
+              return const CircularProgressIndicator();
+            },
+          ),
+          "/profile": (context) => FutureBuilder<mongo.Db>(
+            future: db,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return ProfilePage(title: "Profile", db: snapshot.data!);
+              }
+              return const CircularProgressIndicator();
+            },
+          ),
+          "/test": (context) => FutureBuilder<mongo.Db>(
+            future: db,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return TestPage(title: "Test", db: snapshot.data!);
+              }
+              return const CircularProgressIndicator();
+            },
+          ),
         });
   }
 }

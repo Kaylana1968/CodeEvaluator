@@ -58,4 +58,18 @@ class User {
   set admin(bool value) {
     _admin = value;
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'lastName': lastName,
+      'firstName': firstName,
+      'password': password,
+      'age': age,
+      'email': email,
+      'address': address,
+      'motivation': motivation,
+      'isAdmin': admin,
+    };
+  }
+
 }
