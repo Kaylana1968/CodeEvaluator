@@ -137,8 +137,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> result;
-    User newUser;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -155,18 +153,19 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   child: const Text("Submit"),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      newUser = User(
+                      final String message = await register(
+                          context,
+                          widget.db,
                           _lastNameController.text,
                           _firstNameController.text,
-                          _passwordController.text,
-                          _ageController.hashCode,
                           _emailController.text,
+                          _passwordController.text,
+                          _confirmPasswordController.text,
                           _addressController.text,
-                          _motivationValue,
-                          false);
-                      result = await insertUser(widget.db, newUser);
+                          _ageController.text,
+                          _motivationValue);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("${result['message']}")),
+                        SnackBar(content: Text(message)),
                       );
                     }
                   }),

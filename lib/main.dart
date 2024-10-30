@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: '/login',
+        initialRoute: '/register',
         routes: {
           "/add-test": (context) => FutureBuilder<mongo.Db>(
                 future: db,
