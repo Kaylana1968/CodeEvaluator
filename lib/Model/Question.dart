@@ -1,6 +1,6 @@
 class Question {
   String _label;
-  int _answer;
+  List<int> _answer;
   List<String> _choices;
   String _category;
 
@@ -12,9 +12,9 @@ class Question {
     _label = value;
   }
 
-  int get answer => _answer;
+  List<int> get answer => _answer;
 
-  set answer(int value) {
+  set answer(List<int> value) {
     _answer = value;
   }
 
@@ -28,5 +28,14 @@ class Question {
 
   set category(String value) {
     _category = value;
+  }
+
+  Map<String, dynamic> toMap(){
+    return {
+      'label': label,
+      'firstName': answer,
+      'password': choices,
+      'age': category,
+    };
   }
 }
