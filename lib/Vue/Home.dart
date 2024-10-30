@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
+import '../Controller/header.dart';
 import '../Model/User.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,22 +19,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-        actions: [
-          IconButton(
-            style: IconButton.styleFrom(backgroundColor: Colors.deepPurple,
-              foregroundColor: Colors.black,
-            ),
-            onPressed: () => (Navigator.pushNamed(context, '/profile')),
-            icon: const Icon(
-              Icons.person,
-              size: 30,
-            ),
-          ),
-        ],
-      ),
+      appBar: headerDisplay(context, widget.title),
       body: Container(
         width: double.infinity,
           margin: const EdgeInsets.all(16.0),
