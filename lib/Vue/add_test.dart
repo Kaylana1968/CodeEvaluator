@@ -20,6 +20,7 @@ class AddTestPage extends StatefulWidget {
 
 class _AddTestPageState extends State<AddTestPage> {
   final formKey = GlobalKey<FormState>();
+  String testLabel = "";
   List<Question> questions = [];
   List<Category> categories = [];
   Category category = Category("");
@@ -152,8 +153,6 @@ class _AddTestPageState extends State<AddTestPage> {
 
   @override
   Widget build(BuildContext context) {
-    String testLabel = "";
-
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
