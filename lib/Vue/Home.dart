@@ -1,57 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
-import '../Controller/header.dart';
 import '../Model/User.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key, required this.title, required this.db});
+
   final String title;
   final mongo.Db db;
-  final mongo.ObjectId userId;
-
-  const HomePage(
-      {super.key, required this.title, required this.db, required this.userId});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  late User user;
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchUser();
-  }
-
-  Future<void> _fetchUser() async {
-    var collection = widget.db.collection('User');
-    var userData = await collection.findOne(mongo.where.id(widget.userId));
-    setState(() {
-      if (userData != null) {
-        user = User.fromMap(userData);
-      } else {
-        user = User("monNom", "monPrenom", "password", 4, "monMail@gmail.com",
-            "maMaison", "maMotivation", false);
-      }
-      isLoading = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return Scaffold(
-        appBar: headerDisplay(context, widget.title, false),
-        body: const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+    final User? userArgument =
+        ModalRoute.of(context)!.settings.arguments as User?;
+
+    if (userArgument == null) {
+      Navigator.pushNamed(context, "/login");
     }
 
+    final User user = userArgument!;
+
     return Scaffold(
-      appBar: headerDisplay(context, widget.title, false),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+        actions: [
+          IconButton(
+            style: IconButton.styleFrom(
+              backgroundColor: Colors.deepPurple,
+              foregroundColor: Colors.black,
+            ),
+            onPressed: () =>
+                (Navigator.pushNamed(context, '/profile', arguments: user)),
+            icon: const Icon(
+              Icons.person,
+              size: 30,
+            ),
+          ),
+        ],
+      ),
       body: Container(
         width: double.infinity,
         margin: const EdgeInsets.all(16.0),
@@ -81,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                     context,
                     '/admin_dashboard',
                     arguments: {
-                      'userId': widget.userId, // Pass the correct userId
+                      'user': user,
                     },
                   );
                 },

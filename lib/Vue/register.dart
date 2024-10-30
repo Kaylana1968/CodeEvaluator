@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Controller/register.dart';
-import 'package:code_evaluator/Controller/register.dart';
 import '../Model/User.dart';
-import '../Controller/database.dart';
 
 const List<String> motivations = [
   "Poursuite d'études",
@@ -12,10 +10,12 @@ const List<String> motivations = [
 ];
 
 class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({super.key, required this.title, required this.db});
+  const RegistrationPage(
+      {super.key, required this.title, required this.db, this.user});
 
   final String title;
   final mongo.Db db;
+  final User? user;
 
   @override
   State<RegistrationPage> createState() => _RegistrationPageState();
@@ -32,7 +32,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   String _motivationValue = motivations.first;
-
 
   Widget formInput() {
     return Column(
@@ -138,8 +137,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> result;
-    User newUser;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -156,10 +153,19 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   child: const Text("Submit"),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      newUser = User(_lastNameController.text, _firstNameController.text, _passwordController.text, _ageController.hashCode, _emailController.text, _addressController.text, _motivationValue, false);
-                      result = await insertUser(widget.db, newUser);
+                      final String message = await register(
+                          context,
+                          widget.db,
+                          _lastNameController.text,
+                          _firstNameController.text,
+                          _emailController.text,
+                          _passwordController.text,
+                          _confirmPasswordController.text,
+                          _addressController.text,
+                          _ageController.text,
+                          _motivationValue);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("${result['message']}")),
+                        SnackBar(content: Text(message)),
                       );
                     }
                   }),

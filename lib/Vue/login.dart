@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
-import '../Controller/database.dart';
+import '../Model/User.dart';
 import '../Controller/login.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, required this.title, required this.db});
+  const LoginPage(
+      {super.key, required this.title, required this.db, this.user});
 
   final String title;
   final mongo.Db db;
+  final User? user;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -17,13 +19,6 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _emailController.text = 'root@admin.com'; // Set initial value
-    _passwordController.text = 'root'; // Set initial value
-  }
 
   Widget formInput() {
     return Column(
@@ -50,46 +45,36 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> result;
-    mongo.ObjectId userId;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
-        automaticallyImplyLeading: false, // Ajoutez cette ligne
       ),
       body: Container(
-        margin: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Form(key: _formKey, child: formInput()),
-            const SizedBox(height: 8.0),
-            ElevatedButton(
-              child: const Text("Submit"),
-              onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  result = await getUser(widget.db, _emailController.text,
-                      _passwordController.text);
-                  if (result['success']) {
-                    userId = result['data'];
-                    print('User id: $userId');
-                    Navigator.pushNamed(context, '/',
-                        arguments: {'userId': userId, 'db': widget.db});
-                  }
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("${result['message']}")),
-                  );
-                }
-              },
-            ),
-            ElevatedButton(
-              child: const Text('Register'),
-              onPressed: () => (Navigator.pushNamed(context, '/register')),
-            ),
-          ],
-        ),
-      ),
+          margin: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Form(key: _formKey, child: formInput()),
+              const SizedBox(height: 8.0),
+              ElevatedButton(
+                  child: const Text("Submit"),
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      String message = await login(context, widget.db,
+                          _emailController.text, _passwordController.text);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(message)),
+                      );
+                    }
+                  }),
+              ElevatedButton(
+                child: const Text('Register'),
+                onPressed: () => (Navigator.pushNamed(context, '/register')),
+              ),
+            ],
+          )),
     );
   }
 }

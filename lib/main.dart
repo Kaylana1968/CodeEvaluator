@@ -8,20 +8,10 @@ import 'Vue/login.dart';
 import 'Vue/profile.dart';
 import 'Controller/database.dart';
 import 'Vue/test.dart';
-import 'Vue/admin_dashboard.dart';
 
 void main() {
   runApp(const MyApp());
 }
-
-AppBar buildCustomAppBar({required String title, List<Widget>? actions}) {
-  return AppBar(
-    title: Text(title),
-    actions: actions,
-    backgroundColor: Colors.deepPurple,
-  );
-}
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -38,13 +28,13 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: '/login',
+        initialRoute: '/add-test',
         routes: {
           "/add-test": (context) => FutureBuilder<mongo.Db>(
                 future: db,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return AddTestPage(title: "add-test", db: snapshot.data!);
+                    return AddTestPage(title: "Register", db: snapshot.data!);
                   }
                   return const CircularProgressIndicator();
                 },
@@ -86,23 +76,15 @@ class MyApp extends StatelessWidget {
                   return const CircularProgressIndicator();
                 },
               ),
-          "/": (context) {
-            final args = ModalRoute.of(context)!.settings.arguments
-                as Map<String, dynamic>?;
-            return FutureBuilder<mongo.Db>(
-              future: db,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return HomePage(
-                    title: "Home",
-                    db: snapshot.data!,
-                    userId: args?['userId'] ?? mongo.ObjectId(),
-                  );
-                }
-                return const CircularProgressIndicator();
-              },
-            );
-          },
+          "/": (context) => FutureBuilder<mongo.Db>(
+                future: db,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return HomePage(title: "Home", db: snapshot.data!);
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
           "/evaluation": (context) => FutureBuilder<mongo.Db>(
                 future: db,
                 builder: (context, snapshot) {
@@ -113,26 +95,6 @@ class MyApp extends StatelessWidget {
                   return const CircularProgressIndicator();
                 },
               ),
-          // In lib/main.dart
-          // In lib/main.dart
-          "/admin_dashboard": (context) {
-            final args = ModalRoute.of(context)!.settings.arguments
-                as Map<String, dynamic>?;
-            return FutureBuilder<mongo.Db>(
-              future: db,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return AdminDashboardPage(
-                    title: "Admin Dashboard",
-                    db: snapshot.data!,
-                    userId: args?['userId'] ??
-                        mongo.ObjectId(), // Use the passed userId
-                  );
-                }
-                return const CircularProgressIndicator();
-              },
-            );
-          },
         });
   }
 }

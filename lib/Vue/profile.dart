@@ -1,12 +1,8 @@
-import 'dart:ffi';
-
-import 'package:code_evaluator/Model/Score.dart';
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Model/User.dart';
 import '../Controller/profile.dart';
 import 'package:intl/intl.dart';
-import 'package:code_evaluator/Controller/profile.dart';
 
 const List<String> motivations = [
   "Poursuite d'études",
@@ -31,9 +27,10 @@ class _ProfilePageState extends State<ProfilePage> {
   late Map<String, dynamic> result;
   late List<Map<String, dynamic>> scores;
 
-  User userghg = User("monNom", "monPrenom", "password", 4, "monMail@gmail.com", "maMaison", "maMotivation", false);
+  User userghg = User("monNom", "monPrenom", "password", 4, "monMail@gmail.com",
+      "maMaison", "maMotivation", false);
 
-  Widget modifyAddress() {
+  Widget modifyAddress(User user) {
     Map<String, dynamic> result;
     return Column(children: [
       TextFormField(
@@ -46,17 +43,18 @@ class _ProfilePageState extends State<ProfilePage> {
       ElevatedButton(
           child: const Text('Modify'),
           onPressed: () async {
-            result = await updateAddress(widget.db, user.email, addressController.text);
+            result = await updateAddress(
+                widget.db, user.email, addressController.text);
             ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("${result['message']}")),
-          );
-         }
-      )
+              SnackBar(content: Text("${result['message']}")),
+            );
+          })
     ]);
   }
 
   Future<Widget> _scoreList() async {
-    mongo.ObjectId userId = mongo.ObjectId.fromHexString('67213c1d50d27b5692000000');
+    mongo.ObjectId userId =
+        mongo.ObjectId.fromHexString('67213c1d50d27b5692000000');
 
     var result = await getScore(userId, widget.db);
     if (result['success']) {
@@ -136,7 +134,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  Widget modifyMotivation() {
+  Widget modifyMotivation(User user) {
     Map<String, dynamic> result;
     return Column(children: [
       DropdownButton(
@@ -155,17 +153,26 @@ class _ProfilePageState extends State<ProfilePage> {
       ElevatedButton(
           child: const Text('Modify'),
           onPressed: () async {
-            result = await updateMotivations(widget.db, user.email, motivationValue);
+            result =
+                await updateMotivations(widget.db, user.email, motivationValue);
             ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("${result['message']}")),
+              SnackBar(content: Text("${result['message']}")),
             );
-          }
-      )
+          })
     ]);
   }
 
   @override
   Widget build(BuildContext context) {
+    final User? userArgument =
+        ModalRoute.of(context)!.settings.arguments as User?;
+
+    if (userArgument == null) {
+      Navigator.pushNamed(context, "/login");
+    }
+
+    final User user = userArgument!;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -185,17 +192,17 @@ class _ProfilePageState extends State<ProfilePage> {
                     Icons.person,
                     size: 50,
                   ),
-                  Text("${userghg .firstName} ${userghg .lastName}"),
-                  Text(userghg .age.toString()),
-                  Text(userghg .address),
-                  Text(userghg .email),
-                  Text(userghg .motivation),
+                  Text("${userghg.firstName} ${userghg.lastName}"),
+                  Text(userghg.age.toString()),
+                  Text(userghg.address),
+                  Text(userghg.email),
+                  Text(userghg.motivation),
                 ],
               ),
             ),
           ),
-          Form(child: modifyAddress()),
-          Form(child: modifyMotivation()),
+          Form(child: modifyAddress(user)),
+          Form(child: modifyMotivation(user)),
           Expanded(
             child: FutureBuilder<Widget>(
               future: _scoreList(),
