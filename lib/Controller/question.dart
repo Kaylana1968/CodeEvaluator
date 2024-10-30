@@ -31,29 +31,17 @@ Future<Map<String, dynamic>> getAllTestByCategory(
 
 Future<Map<String, dynamic>> getAllQuestion(mongo.Db db) async {
   final collection = db.collection('Question');
-  final categoryCollection = db.collection('Category');
   try {
-    var results = await collection.find().toList();
+    final results = await collection.find().toList();
 
     if (results.isNotEmpty) {
-      Future<List<Question>> getQuestions() async {
-        List<Future<Question>> futures = (results.map((object) async {
-          final categoryResult =
-              await categoryCollection.findOne({'_id': object['category']});
-          Category category = Category(categoryResult?['label']);
-
-          return Question(
-              object['label'],
-              List<Map<String, bool>>.from(object['choices'].map((answer) => {
-                    answer['choiceLabel']: answer['isGood']
-                  }.cast<String, bool>())),
-              category);
-        }).toList());
-
-        return await Future.wait(futures);
-      }
-
-      List<Question> questions = await getQuestions();
+      List<Question> questions = results.map((object) {
+        return Question(
+            object['label'],
+            List<Choice>.from(object['choices'].map(
+                (choice) => Choice(choice['choiceLabel'], choice['isGood']))),
+            object['category']);
+      }).toList();
 
       return {
         "success": true,
@@ -74,17 +62,14 @@ Future<Map<String, dynamic>> getAllQuestion(mongo.Db db) async {
 }
 
 Future<Map<String, dynamic>> getAllCategory(mongo.Db db) async {
-  var collection = db.collection('Category');
+  final collection = db.collection('Category');
   try {
-    var results = await collection.find().toList();
+    final results = await collection.find().toList();
 
     if (results.isNotEmpty) {
-      List<Category> categories = List<Category>.from(
-          results.map((object) => Category(object['label'])).toList());
-
       return {
         "success": true,
-        "data": categories,
+        "data": results,
         "message": "Retrieved all records successfully"
       };
     } else {

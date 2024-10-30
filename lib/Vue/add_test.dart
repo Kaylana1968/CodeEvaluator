@@ -22,8 +22,8 @@ class _AddTestPageState extends State<AddTestPage> {
   final formKey = GlobalKey<FormState>();
   String testLabel = "";
   List<Question> questions = [];
-  List<Category> categories = [];
-  Category category = Category("");
+  List<Map<String, dynamic>> categories = [];
+  Map<String, dynamic> category = {};
   List<Question> existingQuestions = [];
   List<Question> categoryQuestions = [];
 
@@ -36,7 +36,7 @@ class _AddTestPageState extends State<AddTestPage> {
     existingQuestions = questionResult['data'];
 
     categoryQuestions = existingQuestions
-        .where((question) => question.category.label == category.label)
+        .where((question) => question.category == category['_id'])
         .toList();
 
     setState(() {});
@@ -51,21 +51,17 @@ class _AddTestPageState extends State<AddTestPage> {
   Widget _buildChoiceRow(Question question, int index) {
     return Row(children: [
       Checkbox(
-          value: question.choices[index].values.first,
+          value: question.choices[index].isGood,
           onChanged: (value) => setState(() {
-                question.choices[index] = {
-                  question.choices[index].keys.first: value!
-                };
+                question.choices[index].isGood = value!;
               })),
       Expanded(
         child: TextFormField(
-          initialValue: question.choices[index].keys.first,
+          initialValue: question.choices[index].choiceLabel,
           decoration: InputDecoration(labelText: "Choice ${index + 1}"),
           validator: (value) => value!.isEmpty ? "Enter a choice" : null,
           onChanged: (value) {
-            question.choices[index] = {
-              value: question.choices[index].values.first
-            };
+            question.choices[index].choiceLabel = value;
           },
         ),
       ),
@@ -114,7 +110,7 @@ class _AddTestPageState extends State<AddTestPage> {
           const SizedBox(height: 8.0),
           ElevatedButton(
               onPressed: () => setState(() {
-                    question.choices.add({"": false});
+                    question.choices.add(Choice("", false));
                   }),
               child: const Text("Add a choice"))
         ]);
@@ -122,7 +118,8 @@ class _AddTestPageState extends State<AddTestPage> {
     );
   }
 
-  Widget _buildFloatingButtons(List<Question> questions, Category category) {
+  Widget _buildFloatingButtons(
+      List<Question> questions, Map<String, dynamic> category) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -145,7 +142,7 @@ class _AddTestPageState extends State<AddTestPage> {
         FloatingActionButton(
             child: const Icon(Icons.add),
             onPressed: () => setState(() {
-                  questions.add(Question("", [], category));
+                  questions.add(Question("", [], category['_id']));
                 }))
       ],
     );
@@ -173,23 +170,28 @@ class _AddTestPageState extends State<AddTestPage> {
                         onChanged: (value) => setState(() {
                               testLabel = value;
                             })),
-                    DropdownButton(
-                        isExpanded: true,
-                        value: category,
-                        items: categories.map((Category value) {
-                          return DropdownMenuItem<Category>(
-                            value: value,
-                            child: Text(value.label),
-                          );
-                        }).toList(),
-                        onChanged: (value) => setState(() {
-                              category = value!;
-                              questions.clear();
-                              categoryQuestions = existingQuestions
-                                  .where((question) =>
-                                      question.category.label == value.label)
-                                  .toList();
-                            })),
+                    DropdownButton<Map<String, dynamic>>(
+                      isExpanded: true,
+                      value: category,
+                      items: categories.map((Map<String, dynamic> value) {
+                        return DropdownMenuItem<Map<String, dynamic>>(
+                          value: value,
+                          child: Text(value['label']),
+                        );
+                      }).toList(),
+                      onChanged: (Map<String, dynamic>? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            category = newValue;
+                            questions.clear();
+                            categoryQuestions = existingQuestions
+                                .where((question) =>
+                                    question.category == newValue['_id'])
+                                .toList();
+                          });
+                        }
+                      },
+                    ),
                     _buildQuestions(questions),
                     ElevatedButton(
                       onPressed: () async {
