@@ -1,8 +1,5 @@
-import 'dart:developer';
-
 import 'package:code_evaluator/Model/User.dart';
 import 'package:code_evaluator/Model/Question.dart';
-import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
 class Database {
@@ -89,10 +86,10 @@ class Database {
     }
   }
 
-   Future<Map<String, dynamic>> getAllTestByCategory(mongo.Db db, String category) async{
+   Future<Map<String, dynamic>> getAllTestByCategory(mongo.Db db, String category) async {
      var collection = db.collection('Test');
      try {
-       var results = await collection.find({'category' : category}).toList();
+       var results = await collection.find({'category': category}).toList();
 
        if (results.isNotEmpty) {
          return {
@@ -115,8 +112,7 @@ class Database {
          "message": "An error occurred during connection"
        };
      }
-     
-  // Créer une question
+   }
    Future<Map<String, dynamic>> insertQuestions(mongo.Db db, Question question) async {
      var collection = db.collection('Question');
        try {
@@ -153,6 +149,4 @@ class Database {
        };
      }
    }
-
-
 }
