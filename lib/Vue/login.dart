@@ -66,6 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                       _passwordController.text);
                   if (result['success']) {
                     userId = result['data'];
+                    Navigator.pushNamed(context, '/profil');
                   }
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("${result['message']}")),
