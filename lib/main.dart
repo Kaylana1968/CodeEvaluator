@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: '/add-test',
+        initialRoute: '/login',
         routes: {
           "/add-test": (context) => FutureBuilder<mongo.Db>(
                 future: db,
@@ -77,23 +77,24 @@ class MyApp extends StatelessWidget {
                 },
               ),
           "/": (context) => FutureBuilder<mongo.Db>(
-            future: db,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return HomePage(title: "Home", db: snapshot.data!);
-              }
-              return const CircularProgressIndicator();
-            },
-          ),
+                future: db,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return HomePage(title: "Home", db: snapshot.data!);
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
           "/evaluation": (context) => FutureBuilder<mongo.Db>(
-            future: db,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return QuestionPage(title: "Evaluation", db: snapshot.data!);
-              }
-              return const CircularProgressIndicator();
-            },
-          ),
+                future: db,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return QuestionPage(
+                        title: "Evaluation", db: snapshot.data!);
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
         });
   }
 }

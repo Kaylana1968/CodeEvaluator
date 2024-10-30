@@ -9,9 +9,12 @@ const List<String> motivations = [
 ];
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key, required this.title, required mongo.Db db});
+  const ProfilePage(
+      {super.key, required this.title, required this.db, this.user});
 
   final String title;
+  final mongo.Db db;
+  final User? user;
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -22,23 +25,20 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController passwordController = TextEditingController();
   String motivationValue = motivations.first;
 
-  User user = User("monNom","monPrenom","password",4,"monMail@gmail.com","maMaison","maMotivation",false);
+  User user = User("monNom", "monPrenom", "password", 4, "monMail@gmail.com",
+      "maMaison", "maMotivation", false);
 
   Widget modifyAddress() {
     return Column(children: [
       TextFormField(
         decoration: const InputDecoration(
-          labelText: "Modify Address",),
+          labelText: "Modify Address",
+        ),
         validator: (value) => value!.isEmpty ? 'Enter your last name' : null,
       ),
-      ElevatedButton(
-          child: const Text('Modify'),
-          onPressed: () => ()
-      )
-    ]
-    );
+      ElevatedButton(child: const Text('Modify'), onPressed: () => ())
+    ]);
   }
-
 
   Widget modifyMotivation() {
     return Column(children: [
@@ -52,14 +52,10 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           }).toList(),
           onChanged: (value) => setState(() {
-            motivationValue = value!;
-          })),
-      ElevatedButton(
-          child: const Text('Modify'),
-          onPressed: () => ()
-      )
-    ]
-    );
+                motivationValue = value!;
+              })),
+      ElevatedButton(child: const Text('Modify'), onPressed: () => ())
+    ]);
   }
 
   @override
@@ -70,34 +66,32 @@ class _ProfilePageState extends State<ProfilePage> {
         title: Text(widget.title),
       ),
       body: Column(
-        // width: double.infinity,
-        // margin: const EdgeInsets.all(16.0),
-          children: [ Card(
-              margin: const EdgeInsets.all(10.0),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.person,
-                      size: 50,
-                    ),
-                    Text("${user.firstName} ${user.lastName}"),
-                    Text(user.age.toString()),
-                    Text(user.address),
-                    Text(user.email),
-                    Text(user.motivation),
-                  ],
-                ),
-              )
-          ),
+          // width: double.infinity,
+          // margin: const EdgeInsets.all(16.0),
+          children: [
+            Card(
+                margin: const EdgeInsets.all(10.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.person,
+                        size: 50,
+                      ),
+                      Text("${user.firstName} ${user.lastName}"),
+                      Text(user.age.toString()),
+                      Text(user.address),
+                      Text(user.email),
+                      Text(user.motivation),
+                    ],
+                  ),
+                )),
             Form(child: modifyAddress()),
             Form(child: modifyMotivation())
-
-          ]
-      ),
+          ]),
     );
   }
 }

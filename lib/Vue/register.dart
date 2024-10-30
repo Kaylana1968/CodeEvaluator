@@ -10,10 +10,12 @@ const List<String> motivations = [
 ];
 
 class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({super.key, required this.title, required this.db});
+  const RegistrationPage(
+      {super.key, required this.title, required this.db, this.user});
 
   final String title;
   final mongo.Db db;
+  final User? user;
 
   @override
   State<RegistrationPage> createState() => _RegistrationPageState();

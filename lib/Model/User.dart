@@ -16,7 +16,7 @@ class User {
   set lastName(String value) {
     _lastName = value;
   }
-  
+
   String get firstName => _firstName;
 
   set firstName(String value) {
@@ -71,5 +71,4 @@ class User {
       'isAdmin': admin,
     };
   }
-
 }

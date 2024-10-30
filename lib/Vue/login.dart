@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
+import '../Model/User.dart';
 import '../Controller/login.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, required this.title, required this.db});
+  const LoginPage(
+      {super.key, required this.title, required this.db, this.user});
 
   final String title;
   final mongo.Db db;
+  final User? user;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -42,9 +45,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> result;
-    mongo.ObjectId userId;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -61,13 +61,11 @@ class _LoginPageState extends State<LoginPage> {
                   child: const Text("Submit"),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      result = await getUser(widget.db, _emailController.text,
-                          _passwordController.text);
-                      if (result['success']) {
-                        userId = result['data'];
-                      }
+                      String message = await login(context, widget.db,
+                          _emailController.text, _passwordController.text);
+
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("${result['message']}")),
+                        SnackBar(content: Text(message)),
                       );
                     }
                   }),
