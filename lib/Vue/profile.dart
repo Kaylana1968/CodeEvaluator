@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Model/User.dart';
+import 'package:code_evaluator/Controller/profile.dart';
 
 const List<String> motivations = [
   "Poursuite d'études",
@@ -9,38 +10,45 @@ const List<String> motivations = [
 ];
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key, required this.title, required mongo.Db db});
+  const ProfilePage({super.key, required this.title, required this.db});
 
   final String title;
+  final mongo.Db db;
+
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
   String motivationValue = motivations.first;
-
-  User user = User("monNom","monPrenom","password",4,"monMail@gmail.com","maMaison","maMotivation",false);
-
+  User user = User("monNom","monPrenom","password",4,"email","maMaison","maMotivation",false);
   Widget modifyAddress() {
+    Map<String, dynamic> result;
     return Column(children: [
       TextFormField(
+        controller: addressController,
         decoration: const InputDecoration(
           labelText: "Modify Address",),
         validator: (value) => value!.isEmpty ? 'Enter your last name' : null,
       ),
       ElevatedButton(
           child: const Text('Modify'),
-          onPressed: () => ()
-      )
+          onPressed: () async {
+            result = await updateAddress(widget.db, user.email, addressController.text);
+          ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("${result['message']}")),
+          );
+          }
+        )
     ]
     );
   }
 
 
   Widget modifyMotivation() {
+    Map<String, dynamic> result;
     return Column(children: [
       DropdownButton(
           isExpanded: true,
@@ -56,7 +64,12 @@ class _ProfilePageState extends State<ProfilePage> {
           })),
       ElevatedButton(
           child: const Text('Modify'),
-          onPressed: () => ()
+          onPressed: () async {
+            result = await updateMotivations(widget.db, user.email, motivationValue);
+            ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("${result['message']}")),
+            );
+          }
       )
     ]
     );
