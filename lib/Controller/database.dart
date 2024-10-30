@@ -112,35 +112,6 @@ class Database {
      }
    }
 
-   Future<Map<String, dynamic>> getQuestion(mongo.Db db, mongo.ObjectId id) async{
-     var collection = db.collection('Test');
-     try {
-       var results = await collection.findOne({'_id' : id});
-
-       if (results != null) {
-         return {
-           "success": true,
-           "data": results,
-           "message": "Retrieved all records successfully"
-         };
-       } else {
-         return {
-           "success": false,
-           "data": [],
-           "message": "No records found"
-         };
-       }
-     } catch (e) {
-       print('Erreur lors de la récupération : $e');
-       return {
-         "success": false,
-         "data": null,
-         "message": "An error occurred during connection"
-       };
-     }
-   }
-
-
 
 
 
