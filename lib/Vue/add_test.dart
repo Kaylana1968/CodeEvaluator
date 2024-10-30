@@ -156,6 +156,8 @@ class _AddTestPageState extends State<AddTestPage> {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController labelController = TextEditingController();
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -168,6 +170,13 @@ class _AddTestPageState extends State<AddTestPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    TextFormField(
+                      controller: labelController,
+                      decoration:
+                          const InputDecoration(labelText: "Test label"),
+                      validator: (value) =>
+                          value!.isEmpty ? "Enter a label" : null,
+                    ),
                     DropdownButton(
                         isExpanded: true,
                         value: category,
@@ -187,9 +196,17 @@ class _AddTestPageState extends State<AddTestPage> {
                             })),
                     _buildQuestions(questions),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (formKey.currentState!.validate()) {
-                          createTest();
+                          Map<String, dynamic> result = await createTest(
+                              widget.db,
+                              labelController.text,
+                              questions,
+                              category);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(result['message'])),
+                          );
                         }
                       },
                       child: const Text("Create test"),

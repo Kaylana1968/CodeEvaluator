@@ -35,9 +35,9 @@ class Question {
   Map<String, dynamic> toMap() {
     return {
       'label': label,
-      'firstName': answer,
-      'password': choices,
-      'age': category,
+      'answer': answer,
+      'choices': choices,
+      'category': category,
     };
   }
 }
