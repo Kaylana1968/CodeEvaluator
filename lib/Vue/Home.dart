@@ -15,14 +15,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    final User? userArgument =
-        ModalRoute.of(context)!.settings.arguments as User?;
+    final User? user = ModalRoute.of(context)!.settings.arguments as User?;
 
-    if (userArgument == null) {
-      Navigator.pushNamed(context, "/login");
-    }
+    // TODO : something to redirect user if user == null
 
-    final User user = userArgument!;
+    // final User user = userArgument!;
 
     return Scaffold(
       appBar: AppBar(
@@ -51,7 +48,7 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Hello ${user.firstName}",
+                Text("Hello ${user?.firstName}",
                     style: const TextStyle(fontSize: 30)),
               ],
             ),
@@ -65,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                 child: const Text("Graphic")),
             const SizedBox(height: 40.0),
             // In lib/Vue/Home.dart
-            if (user.admin)
+            if (user != null && user.admin)
               ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(

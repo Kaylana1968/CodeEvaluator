@@ -30,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
   User userghg = User("monNom", "monPrenom", "password", 4, "monMail@gmail.com",
       "maMaison", "maMotivation", false);
 
-  Widget modifyAddress(User user) {
+  Widget modifyAddress(User? user) {
     Map<String, dynamic> result;
     return Column(children: [
       TextFormField(
@@ -44,7 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
           child: const Text('Modify'),
           onPressed: () async {
             result = await updateAddress(
-                widget.db, user.email, addressController.text);
+                widget.db, userghg.email, addressController.text);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("${result['message']}")),
             );
@@ -134,7 +134,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  Widget modifyMotivation(User user) {
+  Widget modifyMotivation(User? user) {
     Map<String, dynamic> result;
     return Column(children: [
       DropdownButton(
@@ -154,7 +154,7 @@ class _ProfilePageState extends State<ProfilePage> {
           child: const Text('Modify'),
           onPressed: () async {
             result =
-                await updateMotivations(widget.db, user.email, motivationValue);
+                await updateMotivations(widget.db, userghg.email, motivationValue);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("${result['message']}")),
             );
@@ -164,14 +164,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final User? userArgument =
-        ModalRoute.of(context)!.settings.arguments as User?;
+    final User? user = ModalRoute.of(context)!.settings.arguments as User?;
 
-    if (userArgument == null) {
-      Navigator.pushNamed(context, "/login");
-    }
+    // TODO : add something to redirect user if user == null
 
-    final User user = userArgument!;
+    // final User user = userArgument!;
 
     return Scaffold(
       appBar: AppBar(

@@ -6,12 +6,10 @@ import '../Controller/add_test.dart';
 import '../Controller/question.dart';
 
 class AddTestPage extends StatefulWidget {
-  const AddTestPage(
-      {super.key, required this.title, required this.db, this.user});
+  const AddTestPage({super.key, required this.title, required this.db});
 
   final String title;
   final mongo.Db db;
-  final User? user;
 
   @override
   State<AddTestPage> createState() => _AddTestPageState();
