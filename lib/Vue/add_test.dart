@@ -4,6 +4,7 @@ import '../Model/Question.dart';
 import '../Model/Category.dart';
 import '../Model/User.dart';
 import '../Controller/add_test.dart';
+import '../Controller/question.dart';
 
 class AddTestPage extends StatefulWidget {
   const AddTestPage(
@@ -21,19 +22,57 @@ class _AddTestPageState extends State<AddTestPage> {
   final formKey = GlobalKey<FormState>();
   List<Question> questions = [];
   List<Category> categories = [];
-  Category category = Category('');
+  Category category = Category("");
+  List<Question> existingQuestions = [];
+  List<Question> categoryQuestions = [];
+
+  void initVariables() async {
+    final categoryResult = await getAllCategory(widget.db);
+    categories = categoryResult['data'];
+    category = categories.first;
+
+    final questionResult = await getAllQuestion(widget.db);
+    existingQuestions = questionResult['data'];
+
+    categoryQuestions = existingQuestions
+        .where((question) => question.category.label == category.label)
+        .toList();
+
+    setState(() {});
+  }
 
   @override
   void initState() {
     super.initState();
-
-    // categories = ['Flutter', 'Java', 'Python', 'Javascript'];
-    // category = categories.first;
+    initVariables();
   }
 
-  List<Question> categoryQuestions = [
-    Question("_label", [], ['_choices'], Category(''))
-  ];
+  Widget _buildChoiceRow(Question question, int index) {
+    return Row(children: [
+      Checkbox(
+          value: question.answer.contains(index),
+          onChanged: (value) => setState(() {
+                value!
+                    ? question.answer.add(index)
+                    : question.answer.remove(index);
+              })),
+      Expanded(
+        child: TextFormField(
+          initialValue: question.choices[index],
+          decoration: InputDecoration(labelText: "Choice ${index + 1}"),
+          validator: (value) => value!.isEmpty ? "Enter a label" : null,
+          onChanged: (value) {
+            question.choices[index] = value;
+          },
+        ),
+      ),
+      IconButton(
+          onPressed: () => setState(() {
+                question.choices.removeAt(index);
+              }),
+          icon: const Icon(Icons.close))
+    ]);
+  }
 
   Widget _buildQuestions(List<Question> questions) {
     return ListView.builder(
@@ -66,32 +105,7 @@ class _AddTestPageState extends State<AddTestPage> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-                  return Row(children: [
-                    Checkbox(
-                        value: question.answer.contains(index),
-                        onChanged: (value) => setState(() {
-                              value!
-                                  ? question.answer.add(index)
-                                  : question.answer.remove(index);
-                            })),
-                    Expanded(
-                      child: TextFormField(
-                        initialValue: question.choices[index],
-                        decoration:
-                            InputDecoration(labelText: "Choice ${index + 1}"),
-                        validator: (value) =>
-                            value!.isEmpty ? "Enter a label" : null,
-                        onChanged: (value) {
-                          question.choices[index] = value;
-                        },
-                      ),
-                    ),
-                    IconButton(
-                        onPressed: () => setState(() {
-                              question.choices.removeAt(index);
-                            }),
-                        icon: const Icon(Icons.close))
-                  ]);
+                  return _buildChoiceRow(question, index);
                 },
               )),
           const SizedBox(height: 8.0),
@@ -157,8 +171,7 @@ class _AddTestPageState extends State<AddTestPage> {
                     DropdownButton(
                         isExpanded: true,
                         value: category,
-                        items: categories
-                            .map<DropdownMenuItem<Category>>((Category value) {
+                        items: categories.map((Category value) {
                           return DropdownMenuItem<Category>(
                             value: value,
                             child: Text(value.label),
@@ -167,6 +180,10 @@ class _AddTestPageState extends State<AddTestPage> {
                         onChanged: (value) => setState(() {
                               category = value!;
                               questions.clear();
+                              categoryQuestions = existingQuestions
+                                  .where((question) =>
+                                      question.category.label == value.label)
+                                  .toList();
                             })),
                     _buildQuestions(questions),
                     ElevatedButton(
