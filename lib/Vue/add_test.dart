@@ -21,7 +21,7 @@ class _AddTestPageState extends State<AddTestPage> {
   String category = categories.first;
 
   List<Question> categoryQuestions = [
-    Question("_label", 0, ['_choices'], 'Flutter')
+    Question("_label", [], ['_choices'], 'Flutter')
   ];
 
   Widget _buildQuestions(List<Question> questions) {
@@ -49,7 +49,7 @@ class _AddTestPageState extends State<AddTestPage> {
             ],
           ),
           Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: ListView.builder(
                 itemCount: question.choices.length,
                 shrinkWrap: true,
@@ -57,9 +57,11 @@ class _AddTestPageState extends State<AddTestPage> {
                 itemBuilder: (context, index) {
                   return Row(children: [
                     Checkbox(
-                        value: question.answer == index,
+                        value: question.answer.contains(index),
                         onChanged: (value) => setState(() {
-                              question.answer = index;
+                              value!
+                                  ? question.answer.add(index)
+                                  : question.answer.remove(index);
                             })),
                     Expanded(
                       child: TextFormField(
@@ -121,7 +123,7 @@ class _AddTestPageState extends State<AddTestPage> {
         FloatingActionButton(
             child: const Icon(Icons.add),
             onPressed: () => setState(() {
-                  questions.add(Question("", 0, [], category));
+                  questions.add(Question("", [], [], category));
                 }))
       ],
     );
