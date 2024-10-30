@@ -18,6 +18,13 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    _emailController.text = 'root@admin.com'; // Set initial value
+    _passwordController.text = 'root'; // Set initial value
+  }
+
   Widget formInput() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -41,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     Map<String, dynamic> result;
     mongo.ObjectId userId;
@@ -66,7 +73,9 @@ class _LoginPageState extends State<LoginPage> {
                       _passwordController.text);
                   if (result['success']) {
                     userId = result['data'];
-                    Navigator.pushNamed(context, '/profil');
+                    print('User id: $userId');
+                    Navigator.pushNamed(context, '/',
+                        arguments: {'userId': userId, 'db': widget.db});
                   }
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("${result['message']}")),

@@ -11,6 +11,16 @@ class User {
   User(this._lastName, this._firstName, this._password, this._age, this._email,
       this._address, this._motivation, this._admin);
 
+  User.fromMap(Map<String, dynamic> map)
+      : _lastName = map['lastName'],
+        _firstName = map['firstName'],
+        _password = map['password'],
+        _age = map['age'],
+        _email = map['email'],
+        _address = map['address'],
+        _motivation = map['motivation'],
+        _admin = map['isAdmin'];
+
   String get lastName => _lastName;
 
   set lastName(String value) {
