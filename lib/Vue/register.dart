@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Controller/register.dart';
-import 'package:code_evaluator/Controller/register.dart';
 import '../Model/User.dart';
-import '../Controller/database.dart';
 
 const List<String> motivations = [
   "Poursuite d'études",
@@ -32,7 +30,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   String _motivationValue = motivations.first;
-
 
   Widget formInput() {
     return Column(
@@ -156,7 +153,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   child: const Text("Submit"),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      newUser = User(_lastNameController.text, _firstNameController.text, _passwordController.text, _ageController.hashCode, _emailController.text, _addressController.text, _motivationValue, false);
+                      newUser = User(
+                          _lastNameController.text,
+                          _firstNameController.text,
+                          _passwordController.text,
+                          _ageController.hashCode,
+                          _emailController.text,
+                          _addressController.text,
+                          _motivationValue,
+                          false);
                       result = await insertUser(widget.db, newUser);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text("${result['message']}")),

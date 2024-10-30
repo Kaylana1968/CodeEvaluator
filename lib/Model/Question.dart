@@ -1,8 +1,10 @@
+import 'Category.dart';
+
 class Question {
   String _label;
   List<int> _answer;
   List<String> _choices;
-  String _category;
+  Category _category;
 
   Question(this._label, this._answer, this._choices, this._category);
 
@@ -24,13 +26,13 @@ class Question {
     _choices = value;
   }
 
-  String get category => _category;
+  Category get category => _category;
 
-  set category(String value) {
+  set category(Category value) {
     _category = value;
   }
 
-  Map<String, dynamic> toMap(){
+  Map<String, dynamic> toMap() {
     return {
       'label': label,
       'firstName': answer,

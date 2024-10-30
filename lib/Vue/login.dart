@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
-import '../Controller/database.dart';
 import '../Controller/login.dart';
 
 class LoginPage extends StatefulWidget {
@@ -45,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     Map<String, dynamic> result;
     mongo.ObjectId userId;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -60,14 +60,15 @@ class _LoginPageState extends State<LoginPage> {
               ElevatedButton(
                   child: const Text("Submit"),
                   onPressed: () async {
-                    if (_formKey.currentState!.validate()){
-                        result = await getUser(widget.db, _emailController.text, _passwordController.text);
-                        if (result['success']) {
-                            userId = result['data'];
-                        } 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("${result['message']}")),
-                        );          
+                    if (_formKey.currentState!.validate()) {
+                      result = await getUser(widget.db, _emailController.text,
+                          _passwordController.text);
+                      if (result['success']) {
+                        userId = result['data'];
+                      }
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("${result['message']}")),
+                      );
                     }
                   }),
               ElevatedButton(

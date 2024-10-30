@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Model/Question.dart';
+import '../Model/Category.dart';
 import '../Controller/add_test.dart';
-
-const List<String> categories = ['Flutter', 'Java', 'Python', 'Javascript'];
 
 class AddTestPage extends StatefulWidget {
   const AddTestPage({super.key, required this.title, required this.db});
@@ -18,10 +17,19 @@ class AddTestPage extends StatefulWidget {
 class _AddTestPageState extends State<AddTestPage> {
   final formKey = GlobalKey<FormState>();
   List<Question> questions = [];
-  String category = categories.first;
+  List<Category> categories = [];
+  Category category = Category('');
+
+  @override
+  void initState() {
+    super.initState();
+
+    // categories = ['Flutter', 'Java', 'Python', 'Javascript'];
+    // category = categories.first;
+  }
 
   List<Question> categoryQuestions = [
-    Question("_label", [], ['_choices'], 'Flutter')
+    Question("_label", [], ['_choices'], Category(''))
   ];
 
   Widget _buildQuestions(List<Question> questions) {
@@ -94,7 +102,7 @@ class _AddTestPageState extends State<AddTestPage> {
     );
   }
 
-  Widget _buildFloatingButtons(List<Question> questions, String category) {
+  Widget _buildFloatingButtons(List<Question> questions, Category category) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -147,10 +155,10 @@ class _AddTestPageState extends State<AddTestPage> {
                         isExpanded: true,
                         value: category,
                         items: categories
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
+                            .map<DropdownMenuItem<Category>>((Category value) {
+                          return DropdownMenuItem<Category>(
                             value: value,
-                            child: Text(value),
+                            child: Text(value.label),
                           );
                         }).toList(),
                         onChanged: (value) => setState(() {
