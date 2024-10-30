@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
               backgroundColor: Colors.deepPurple,
               foregroundColor: Colors.black,
             ),
-            onPressed: () => (Navigator.pushNamed(context, '/profile')),
+            onPressed: () => (Navigator.pushNamed(context, '/profile', arguments: user)),
             icon: const Icon(
               Icons.person,
               size: 30,

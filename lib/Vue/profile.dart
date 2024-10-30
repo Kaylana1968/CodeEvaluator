@@ -25,9 +25,6 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController passwordController = TextEditingController();
   String motivationValue = motivations.first;
 
-  User user = User("monNom", "monPrenom", "password", 4, "monMail@gmail.com",
-      "maMaison", "maMotivation", false);
-
   Widget modifyAddress() {
     return Column(children: [
       TextFormField(
@@ -60,14 +57,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final User? user = ModalRoute.of(context)!.settings.arguments as User?;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
       body: Column(
-          // width: double.infinity,
-          // margin: const EdgeInsets.all(16.0),
           children: [
             Card(
                 margin: const EdgeInsets.all(10.0),
@@ -81,11 +78,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         Icons.person,
                         size: 50,
                       ),
-                      Text("${user.firstName} ${user.lastName}"),
-                      Text(user.age.toString()),
-                      Text(user.address),
-                      Text(user.email),
-                      Text(user.motivation),
+                      Text("${user?.firstName} ${user?.lastName}"),
+                      Text("${user?.age.toString()}"),
+                      Text("${user?.address}"),
+                      Text("${user?.email}"),
+                      Text("${user?.motivation}"),
                     ],
                   ),
                 )),
