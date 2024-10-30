@@ -28,13 +28,13 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: '/add-test',
+        initialRoute: '/login',
         routes: {
           "/add-test": (context) => FutureBuilder<mongo.Db>(
                 future: db,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return AddTestPage(title: "Register", db: snapshot.data!);
+                    return AddTestPage(title: "add-test", db: snapshot.data!);
                   }
                   return const CircularProgressIndicator();
                 },

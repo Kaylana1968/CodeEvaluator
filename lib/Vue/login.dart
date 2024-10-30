@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  @override
+@override
   Widget build(BuildContext context) {
     Map<String, dynamic> result;
     mongo.ObjectId userId;
@@ -49,33 +49,37 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
+        automaticallyImplyLeading: false, // Ajoutez cette ligne
       ),
       body: Container(
-          margin: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Form(key: _formKey, child: formInput()),
-              const SizedBox(height: 8.0),
-              ElevatedButton(
-                  child: const Text("Submit"),
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()){
-                        result = await getUser(widget.db, _emailController.text, _passwordController.text);
-                        if (result['success']) {
-                            userId = result['data'];
-                        } 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("${result['message']}")),
-                        );          
-                    }
-                  }),
-              ElevatedButton(
-                child: const Text('Register'),
-                onPressed: () => (Navigator.pushNamed(context, '/register')),
-              ),
-            ],
-          )),
+        margin: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Form(key: _formKey, child: formInput()),
+            const SizedBox(height: 8.0),
+            ElevatedButton(
+              child: const Text("Submit"),
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  result = await getUser(widget.db, _emailController.text,
+                      _passwordController.text);
+                  if (result['success']) {
+                    userId = result['data'];
+                  }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("${result['message']}")),
+                  );
+                }
+              },
+            ),
+            ElevatedButton(
+              child: const Text('Register'),
+              onPressed: () => (Navigator.pushNamed(context, '/register')),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
