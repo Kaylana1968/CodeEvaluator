@@ -13,6 +13,15 @@ void main() {
   runApp(const MyApp());
 }
 
+AppBar buildCustomAppBar({required String title, List<Widget>? actions}) {
+  return AppBar(
+    title: Text(title),
+    actions: actions,
+    backgroundColor: Colors.deepPurple,
+  );
+}
+
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
