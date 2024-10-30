@@ -43,11 +43,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     if (isLoading) {
       return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
-          automaticallyImplyLeading: false,
-        ),
+        appBar: headerDisplay(context, widget.title, false),
         body: const Center(
           child: CircularProgressIndicator(),
         ),
@@ -55,7 +51,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
-      appBar: headerDisplay(context, widget.title),
+      appBar: headerDisplay(context, widget.title, false),
       body: Container(
         width: double.infinity,
         margin: const EdgeInsets.all(16.0),
