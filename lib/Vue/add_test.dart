@@ -50,19 +50,21 @@ class _AddTestPageState extends State<AddTestPage> {
   Widget _buildChoiceRow(Question question, int index) {
     return Row(children: [
       Checkbox(
-          value: question.answer.contains(index),
+          value: question.choices[index].values.first,
           onChanged: (value) => setState(() {
-                value!
-                    ? question.answer.add(index)
-                    : question.answer.remove(index);
+                question.choices[index] = {
+                  question.choices[index].keys.first: value!
+                };
               })),
       Expanded(
         child: TextFormField(
-          initialValue: question.choices[index],
+          initialValue: question.choices[index].keys.first,
           decoration: InputDecoration(labelText: "Choice ${index + 1}"),
-          validator: (value) => value!.isEmpty ? "Enter a label" : null,
+          validator: (value) => value!.isEmpty ? "Enter a choice" : null,
           onChanged: (value) {
-            question.choices[index] = value;
+            question.choices[index] = {
+              value: question.choices[index].values.first
+            };
           },
         ),
       ),
@@ -111,7 +113,7 @@ class _AddTestPageState extends State<AddTestPage> {
           const SizedBox(height: 8.0),
           ElevatedButton(
               onPressed: () => setState(() {
-                    question.choices.add("");
+                    question.choices.add({"": false});
                   }),
               child: const Text("Add a choice"))
         ]);
@@ -125,22 +127,16 @@ class _AddTestPageState extends State<AddTestPage> {
       children: [
         DropdownButton(
             hint: const Text("Look in existing questions"),
-            items: categoryQuestions
-                .asMap()
-                .entries
-                .map<DropdownMenuItem<int>>((entry) {
-              int index = entry.key;
-              Question question = entry.value;
-
-              return DropdownMenuItem<int>(
-                value: index,
+            items: categoryQuestions.map((Question question) {
+              return DropdownMenuItem<Question>(
+                value: question,
                 child: Text(question.label),
               );
             }).toList(),
-            onChanged: (int? index) {
-              if (index != null) {
+            onChanged: (Question? question) {
+              if (question != null) {
                 setState(() {
-                  questions.add(categoryQuestions[index]);
+                  questions.add(Question.clone(question));
                 });
               }
             }),
@@ -148,7 +144,7 @@ class _AddTestPageState extends State<AddTestPage> {
         FloatingActionButton(
             child: const Icon(Icons.add),
             onPressed: () => setState(() {
-                  questions.add(Question("", [], [], category));
+                  questions.add(Question("", [], category));
                 }))
       ],
     );
@@ -156,7 +152,7 @@ class _AddTestPageState extends State<AddTestPage> {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController labelController = TextEditingController();
+    String testLabel = "";
 
     return Scaffold(
         appBar: AppBar(
@@ -171,12 +167,13 @@ class _AddTestPageState extends State<AddTestPage> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     TextFormField(
-                      controller: labelController,
-                      decoration:
-                          const InputDecoration(labelText: "Test label"),
-                      validator: (value) =>
-                          value!.isEmpty ? "Enter a label" : null,
-                    ),
+                        decoration:
+                            const InputDecoration(labelText: "Test label"),
+                        validator: (value) =>
+                            value!.isEmpty ? "Enter a label" : null,
+                        onChanged: (value) => setState(() {
+                              testLabel = value;
+                            })),
                     DropdownButton(
                         isExpanded: true,
                         value: category,
@@ -199,10 +196,7 @@ class _AddTestPageState extends State<AddTestPage> {
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
                           Map<String, dynamic> result = await createTest(
-                              widget.db,
-                              labelController.text,
-                              questions,
-                              category);
+                              widget.db, testLabel, questions, category);
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(result['message'])),

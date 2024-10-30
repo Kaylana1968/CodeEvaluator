@@ -44,8 +44,9 @@ Future<Map<String, dynamic>> getAllQuestion(mongo.Db db) async {
 
           return Question(
               object['label'],
-              List<int>.from(object['answer'].map((answer) => answer.toInt())),
-              List<String>.from(object['choices']),
+              List<Map<String, bool>>.from(object['choices'].map((answer) => {
+                    answer['choiceLabel']: answer['isGood']
+                  }.cast<String, bool>())),
               category);
         }).toList());
 
@@ -95,21 +96,6 @@ Future<Map<String, dynamic>> getAllCategory(mongo.Db db) async {
       "success": false,
       "data": null,
       "message": "An error occurred during connection"
-    };
-  }
-}
-
-Future<Map<String, dynamic>> insertQuestions(
-    mongo.Db db, Question question) async {
-  var collection = db.collection('Question');
-  try {
-    await collection.insert(question.toMap());
-    return {"success": true, "message": "Question successfully added"};
-  } catch (e) {
-    print("Erreur lors de l'insertion : $e");
-    return {
-      "success": false,
-      "message": "An error occurred during creation of the question"
     };
   }
 }

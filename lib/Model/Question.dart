@@ -2,11 +2,15 @@ import 'Category.dart';
 
 class Question {
   String _label;
-  List<int> _answer;
-  List<String> _choices;
+  List<Map<String, bool>> _choices;
   Category _category;
 
-  Question(this._label, this._answer, this._choices, this._category);
+  Question(this._label, this._choices, this._category);
+
+  Question.clone(Question other)
+      : _label = other.label,
+        _choices = List<Map<String, bool>>.from(other.choices),
+        _category = Category.clone(other.category);
 
   String get label => _label;
 
@@ -14,15 +18,9 @@ class Question {
     _label = value;
   }
 
-  List<int> get answer => _answer;
+  List<Map<String, bool>> get choices => _choices;
 
-  set answer(List<int> value) {
-    _answer = value;
-  }
-
-  List<String> get choices => _choices;
-
-  set choices(List<String> value) {
+  set choices(List<Map<String, bool>> value) {
     _choices = value;
   }
 
@@ -30,14 +28,5 @@ class Question {
 
   set category(Category value) {
     _category = value;
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'label': label,
-      'answer': answer,
-      'choices': choices,
-      'category': category,
-    };
   }
 }
