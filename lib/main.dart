@@ -1,6 +1,7 @@
 import 'package:code_evaluator/Vue/question.dart';
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
+import 'Vue/add_test.dart';
 import 'Vue/register.dart';
 import 'Vue/Home.dart';
 import 'Vue/login.dart';
@@ -27,44 +28,54 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: '/',
+        initialRoute: '/add-test',
         routes: {
+          "/add-test": (context) => FutureBuilder<mongo.Db>(
+                future: db,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return AddTestPage(title: "Register", db: snapshot.data!);
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
           "/register": (context) => FutureBuilder<mongo.Db>(
-            future: db,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return RegistrationPage(title: "Register", db: snapshot.data!);
-              }
-              return const CircularProgressIndicator();
-            },
-          ),
+                future: db,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return RegistrationPage(
+                        title: "Register", db: snapshot.data!);
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
           "/login": (context) => FutureBuilder<mongo.Db>(
-            future: db,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return LoginPage(title: "Login", db: snapshot.data!);
-              }
-              return const CircularProgressIndicator();
-            },
-          ),
+                future: db,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return LoginPage(title: "Login", db: snapshot.data!);
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
           "/profile": (context) => FutureBuilder<mongo.Db>(
-            future: db,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return ProfilePage(title: "Profile", db: snapshot.data!);
-              }
-              return const CircularProgressIndicator();
-            },
-          ),
+                future: db,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return ProfilePage(title: "Profile", db: snapshot.data!);
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
           "/test": (context) => FutureBuilder<mongo.Db>(
-            future: db,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return TestPage(title: "Test", db: snapshot.data!);
-              }
-              return const CircularProgressIndicator();
-            },
-          ),
+                future: db,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return TestPage(title: "Test", db: snapshot.data!);
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
           "/": (context) => FutureBuilder<mongo.Db>(
             future: db,
             builder: (context, snapshot) {
