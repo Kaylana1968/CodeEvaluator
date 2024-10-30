@@ -43,7 +43,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final Database database = Database();
     Map<String, dynamic> result;
     mongo.ObjectId userId;
     return Scaffold(
@@ -62,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: const Text("Submit"),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()){
-                        result = await database.getUser(widget.db, _emailController.text, _passwordController.text);
+                        result = await getUser(widget.db, _emailController.text, _passwordController.text);
                         if (result['success']) {
                             userId = result['data'];
                         } 

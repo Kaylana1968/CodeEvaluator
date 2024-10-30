@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Controller/register.dart';
+import 'package:code_evaluator/Controller/register.dart';
 import '../Model/User.dart';
 import '../Controller/database.dart';
 
@@ -137,7 +138,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final Database database = Database();
     Map<String, dynamic> result;
     User newUser;
     return Scaffold(
@@ -157,7 +157,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       newUser = User(_lastNameController.text, _firstNameController.text, _passwordController.text, _ageController.hashCode, _emailController.text, _addressController.text, _motivationValue, false);
-                      result = await database.insertUser(widget.db, newUser);
+                      result = await insertUser(widget.db, newUser);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text("${result['message']}")),
                       );
