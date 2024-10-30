@@ -1,12 +1,19 @@
 
 class Category {
-  String _label;
+  String label;
 
-  Category(this._label);
+  Category({required this.label});
 
-  String get label => _label;
 
-  set label(String value) {
-    _label = value;
-  }
+
+  factory Category.fromJson(Map<String, dynamic> json) => Category(
+    label: json["label"],
+
+  );
+
+  Map<String, dynamic> toJson() => {
+    "label": label,
+
+  };
 }
+

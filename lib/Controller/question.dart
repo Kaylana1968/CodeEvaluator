@@ -1,12 +1,12 @@
-import 'package:code_evaluator/Model/Category.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'package:code_evaluator/Model/Question.dart';
 
-Future<Map<String, dynamic>> getAllTestByCategory(mongo.Db db, Category category) async {
+Future<Map<String, dynamic>> getAllTestByCategory(mongo.Db db, mongo.ObjectId categoryId) async {
   var collection = db.collection('Test');
   try {
-    var categoryId = await collection.findOne({'label' : category.label});
-    var results = await collection.find({'category': categoryId?['_id']}).toList();
+    var results = await collection.find({
+      'category': categoryId
+    }).toList();
 
     if (results.isNotEmpty) {
       return {
