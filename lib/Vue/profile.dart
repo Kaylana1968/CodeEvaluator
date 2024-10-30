@@ -27,10 +27,24 @@ class _ProfilePageState extends State<ProfilePage> {
   late Map<String, dynamic> result;
   late List<Map<String, dynamic>> scores;
 
-  User userghg = User("monNom", "monPrenom", "password", 4, "monMail@gmail.com",
-      "maMaison", "maMotivation", false);
+  User user = User("", "", "", 0, "", "", "", false);
 
-  Widget modifyAddress(User? user) {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final args = ModalRoute.of(context)?.settings.arguments as User?;
+
+    if (args == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacementNamed(context, '/login');
+      });
+    } else {
+      user = args;
+    }
+  }
+
+  Widget modifyAddress(User user) {
     Map<String, dynamic> result;
     return Column(children: [
       TextFormField(
@@ -44,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
           child: const Text('Modify'),
           onPressed: () async {
             result = await updateAddress(
-                widget.db, userghg.email, addressController.text);
+                widget.db, user.email, addressController.text);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("${result['message']}")),
             );
@@ -134,7 +148,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  Widget modifyMotivation(User? user) {
+  Widget modifyMotivation(User user) {
     Map<String, dynamic> result;
     return Column(children: [
       DropdownButton(
@@ -154,7 +168,7 @@ class _ProfilePageState extends State<ProfilePage> {
           child: const Text('Modify'),
           onPressed: () async {
             result =
-                await updateMotivations(widget.db, userghg.email, motivationValue);
+                await updateMotivations(widget.db, user.email, motivationValue);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("${result['message']}")),
             );
@@ -164,12 +178,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final User? user = ModalRoute.of(context)!.settings.arguments as User?;
-
-    // TODO : add something to redirect user if user == null
-
-    // final User user = userArgument!;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -189,11 +197,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     Icons.person,
                     size: 50,
                   ),
-                  Text("${userghg.firstName} ${userghg.lastName}"),
-                  Text(userghg.age.toString()),
-                  Text(userghg.address),
-                  Text(userghg.email),
-                  Text(userghg.motivation),
+                  Text("${user.firstName} ${user.lastName}"),
+                  Text(user.age.toString()),
+                  Text(user.address),
+                  Text(user.email),
+                  Text(user.motivation),
                 ],
               ),
             ),

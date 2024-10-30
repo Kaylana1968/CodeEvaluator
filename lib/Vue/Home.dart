@@ -13,14 +13,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  User user = User("", "", "", 0, "", "", "", false);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final args = ModalRoute.of(context)?.settings.arguments as User?;
+
+    if (args == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacementNamed(context, '/login');
+      });
+    } else {
+      user = args;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final User? user = ModalRoute.of(context)!.settings.arguments as User?;
-
-    // TODO : something to redirect user if user == null
-
-    // final User user = userArgument!;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -48,7 +59,7 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Hello ${user?.firstName}",
+                Text("Hello ${user.firstName}",
                     style: const TextStyle(fontSize: 30)),
               ],
             ),
@@ -62,7 +73,7 @@ class _HomePageState extends State<HomePage> {
                 child: const Text("Graphic")),
             const SizedBox(height: 40.0),
             // In lib/Vue/Home.dart
-            if (user != null && user.admin)
+            if (user.admin)
               ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(
