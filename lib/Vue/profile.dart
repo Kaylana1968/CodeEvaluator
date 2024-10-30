@@ -6,6 +6,7 @@ import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Model/User.dart';
 import '../Controller/profile.dart';
 import 'package:intl/intl.dart';
+import 'package:code_evaluator/Controller/profile.dart';
 
 const List<String> motivations = [
   "Poursuite d'études",
@@ -24,8 +25,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
   String motivationValue = motivations.first;
 
   late Map<String, dynamic> result;
@@ -34,8 +34,10 @@ class _ProfilePageState extends State<ProfilePage> {
   User userghg = User("monNom", "monPrenom", "password", 4, "monMail@gmail.com", "maMaison", "maMotivation", false);
 
   Widget modifyAddress() {
+    Map<String, dynamic> result;
     return Column(children: [
       TextFormField(
+        controller: addressController,
         decoration: const InputDecoration(
           labelText: "Modify Address",
         ),
@@ -43,7 +45,12 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       ElevatedButton(
           child: const Text('Modify'),
-          onPressed: () => ()
+          onPressed: () async {
+            result = await updateAddress(widget.db, user.email, addressController.text);
+            ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("${result['message']}")),
+          );
+         }
       )
     ]);
   }
@@ -129,10 +136,8 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-
-
-
   Widget modifyMotivation() {
+    Map<String, dynamic> result;
     return Column(children: [
       DropdownButton(
         isExpanded: true,
@@ -149,7 +154,12 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       ElevatedButton(
           child: const Text('Modify'),
-          onPressed: () => ()
+          onPressed: () async {
+            result = await updateMotivations(widget.db, user.email, motivationValue);
+            ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("${result['message']}")),
+            );
+          }
       )
     ]);
   }
