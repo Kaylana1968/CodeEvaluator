@@ -9,7 +9,8 @@ Future<Map<String, dynamic>> createTest(mongo.Db db, String label,
           !question.choices.any((choice) => choice.isGood))) {
     return {
       "success": false,
-      "message": "A test must have questions that have a response and at least 2 choices!"
+      "message":
+          "A test must have questions that have a response and at least 2 choices!"
     };
   }
 
@@ -45,6 +46,68 @@ Future<Map<String, dynamic>> createTest(mongo.Db db, String label,
     };
 
     await testCollection.insert(testJson);
+
+    return {"success": true, "message": "Values inserted"};
+  } catch (e) {
+    print("Erreur lors de l'insertion : $e");
+
+    return {"success": false, "message": "An error occurred during insertion"};
+  }
+}
+
+Future<Map<String, dynamic>> updateTest(
+    mongo.Db db,
+    mongo.ObjectId testId,
+    String label,
+    List<Question> questions,
+    Map<String, dynamic> category) async {
+  if (questions.isEmpty ||
+      questions.any((question) =>
+          question.choices.length < 2 ||
+          !question.choices.any((choice) => choice.isGood))) {
+    return {
+      "success": false,
+      "message":
+          "A test must have questions that have a response and at least 2 choices!"
+    };
+  }
+
+  final testCollection = db.collection('Test');
+  final questionCollection = db.collection('Question');
+
+  final testResult = await testCollection.findOne({'_id': testId});
+
+  testResult!['questions'].forEach((questionId) async =>
+      await questionCollection.deleteOne({'_id': questionId}));
+
+  try {
+    final List<mongo.ObjectId> questionIds = [];
+
+    for (var i = 0; i < questions.length; i++) {
+      final Question question = questions[i];
+      final List<Map<String, Object>> choices = question.choices
+          .map((choice) =>
+              {'choiceLabel': choice.choiceLabel, 'isGood': choice.isGood})
+          .toList();
+
+      final questionId = mongo.ObjectId();
+      questionIds.add(questionId);
+      final questionJSON = {
+        '_id': questionId,
+        'label': question.label,
+        'choices': choices,
+        'category': category['_id'],
+      };
+
+      await questionCollection.insert(questionJSON);
+    }
+
+    await testCollection.update(
+        mongo.where.eq('_id', testId),
+        mongo.modify
+            .set('label', label)
+            .set('category', category['_id'])
+            .set('questions', questionIds));
 
     return {"success": true, "message": "Values inserted"};
   } catch (e) {

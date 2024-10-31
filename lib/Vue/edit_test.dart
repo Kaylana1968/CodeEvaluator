@@ -17,6 +17,7 @@ class EditTestPage extends StatefulWidget {
 class _EditTestPageState extends State<EditTestPage> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController testLabelController = TextEditingController();
+  bool hasInit = false;
   List<Question> questions = [];
   List<Map<String, dynamic>> categories = [];
   Map<String, dynamic> category = {};
@@ -29,17 +30,19 @@ class _EditTestPageState extends State<EditTestPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (!hasInit) {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
-    if (args?['user'] == null || !args?['user'].admin) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacementNamed(context, '/login');
-      });
+      if (args?['user'] == null || !args?['user'].admin) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.pushReplacementNamed(context, '/login');
+        });
+      }
+
+      testId = args!['testId'];
+      initVariables();
     }
-
-    testId = args!['testId'];
-    initVariables();
   }
 
   void initVariables() async {
@@ -62,6 +65,8 @@ class _EditTestPageState extends State<EditTestPage> {
     categoryQuestions = existingQuestions
         .where((question) => question.category == category['_id'])
         .toList();
+
+    hasInit = true;
 
     setState(() {});
   }
@@ -219,8 +224,9 @@ class _EditTestPageState extends State<EditTestPage> {
                         ElevatedButton(
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
-                              Map<String, dynamic> result = await createTest(
+                              Map<String, dynamic> result = await updateTest(
                                   widget.db,
+                                  testId!,
                                   testLabelController.text,
                                   questions,
                                   category);

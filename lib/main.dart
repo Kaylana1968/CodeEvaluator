@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
                 future: db,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return AddTestPage(title: "add-test", db: snapshot.data!);
+                    return AddTestPage(title: "Add test", db: snapshot.data!);
                   }
                   return const CircularProgressIndicator();
                 },
@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
                 future: db,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return EditTestPage(title: "Register", db: snapshot.data!);
+                    return EditTestPage(title: "Edit test", db: snapshot.data!);
                   }
                   return const CircularProgressIndicator();
                 },
