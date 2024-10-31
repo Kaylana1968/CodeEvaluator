@@ -1,14 +1,15 @@
-import 'package:code_evaluator/Vue/question.dart';
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
+import 'Controller/database.dart';
 import 'Vue/add_test.dart';
 import 'Vue/edit_test.dart';
 import 'Vue/register.dart';
 import 'Vue/home.dart';
 import 'Vue/login.dart';
 import 'Vue/profile.dart';
-import 'Controller/database.dart';
 import 'Vue/test.dart';
+import 'Vue/quiz.dart';
+import 'Vue/testSelector.dart';
 import 'Vue/admin_dashboard.dart';
 
 void main() {
@@ -109,18 +110,24 @@ class MyApp extends StatelessWidget {
               },
             );
           },
-          "/evaluation": (context) => FutureBuilder<mongo.Db>(
+          "/quiz": (context) => FutureBuilder<mongo.Db>(
                 future: db,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return QuestionPage(
-                        title: "Evaluation", db: snapshot.data!);
+                    return QuizPage(title: "Quiz", db: snapshot.data!);
                   }
                   return const CircularProgressIndicator();
                 },
               ),
-          // In lib/main.dart
-          // In lib/main.dart
+          "/test/selector": (context) => FutureBuilder<mongo.Db>(
+                future: db,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return TestSelectorPage(title: "Test", db: snapshot.data!);
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
           "/admin_dashboard": (context) => FutureBuilder<mongo.Db>(
                 future: db,
                 builder: (context, snapshot) {
