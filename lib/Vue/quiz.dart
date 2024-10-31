@@ -94,7 +94,7 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   Future<void> goToNextQuestion() async {
-    if (test != null) {
+    if (test != null && !testCompleted) {
       Question question =
           await getQuestionForPrint(test!.questions[currentQuestionIndex]);
 
