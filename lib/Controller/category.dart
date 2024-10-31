@@ -1,7 +1,7 @@
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
-class CategoryController {
 
- static Future<Map<String, dynamic>> getAllCategory(mongo.Db db) async {
+class CategoryController {
+  static Future<Map<String, dynamic>> getAllCategory(mongo.Db db) async {
     var collection = db.collection('Category');
     try {
       var results = await collection.find().toList();
@@ -13,11 +13,7 @@ class CategoryController {
           "message": "Retrieved all records successfully"
         };
       } else {
-        return {
-          "success": false,
-          "data": [],
-          "message": "No records found"
-        };
+        return {"success": false, "data": [], "message": "No records found"};
       }
     } catch (e) {
       print('Erreur lors de la récupération : $e');
@@ -29,20 +25,20 @@ class CategoryController {
     }
   }
 
- static Future<mongo.ObjectId?> getCategoryIdByLabel(mongo.Db db, String label) async {
-   var collection = db.collection('Category');
-   try {
-     var result = await collection.findOne(mongo.where.eq('label', label));
+  static Future<mongo.ObjectId?> getCategoryIdByLabel(
+      mongo.Db db, String label) async {
+    var collection = db.collection('Category');
+    try {
+      var result = await collection.findOne(mongo.where.eq('label', label));
 
-     if (result != null) {
-       return result['_id'];
-     } else {
-       return null;
-     }
-   } catch (e) {
-     print('Erreur lors de la récupération de l\'ID : $e');
-     return null;
-   }
- }
-
+      if (result != null) {
+        return result['_id'];
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('Erreur lors de la récupération de l\'ID : $e');
+      return null;
+    }
+  }
 }

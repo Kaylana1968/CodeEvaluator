@@ -68,29 +68,23 @@ class _ProfilePageState extends State<ProfilePage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("${result['message']}")),
             );
-
           })
     ]);
   }
 
   Future<Widget> _scoreList() async {
-
     mongo.ObjectId? userId = await getUserIdByEmail(widget.db, user.email);
 
     var result = await getScore(userId!, widget.db);
     if (result['success']) {
-      print(result);
       List<Map<String, dynamic>> scores = result['data'];
-      print(scores.length);
       List<Map<String, dynamic>> tests = [];
 
       // Récupérer tous les utilisateurs liés aux scores
       for (var score in scores) {
         List<dynamic> questionList = score['mark'];
         DateTime date = score['date'];
-        print('date : $date');
         String formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(date);
-        print(questionList);
 
         num maxPoints = 0;
         num totalUser = 0;
@@ -101,9 +95,7 @@ class _ProfilePageState extends State<ProfilePage> {
           totalUser += question['points'];
         }
 
-        print('scoreTest ${score['test']}');
         var testResult = await getTestById(widget.db, score['test']);
-        print('testresult $testResult');
 
         if (testResult['success']) {
           // Ajoutez les détails du test et le score à un objet

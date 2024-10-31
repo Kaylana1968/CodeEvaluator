@@ -1,10 +1,9 @@
-import 'package:code_evaluator/Vue/quiz.dart';
-import 'package:code_evaluator/Vue/testSelector.dart';
+import 'package:code_evaluator/Vue/question.dart';
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'Vue/add_test.dart';
 import 'Vue/register.dart';
-import 'Vue/Home.dart';
+import 'Vue/home.dart';
 import 'Vue/login.dart';
 import 'Vue/profile.dart';
 import 'Controller/database.dart';
@@ -22,7 +21,6 @@ AppBar buildCustomAppBar({required String title, List<Widget>? actions}) {
     backgroundColor: Colors.deepPurple,
   );
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -82,7 +80,7 @@ class MyApp extends StatelessWidget {
                 future: db,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return TestPage(title: "Category", db: snapshot.data!);
+                    return TestPage(title: "Test", db: snapshot.data!);
                   }
                   return const CircularProgressIndicator();
                 },
@@ -101,43 +99,28 @@ class MyApp extends StatelessWidget {
               },
             );
           },
-          "/quiz": (context) => FutureBuilder<mongo.Db>(
+          "/evaluation": (context) => FutureBuilder<mongo.Db>(
                 future: db,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return QuizPage(
-                        title: "Quiz", db: snapshot.data!);
+                    return QuestionPage(
+                        title: "Evaluation", db: snapshot.data!);
                   }
                   return const CircularProgressIndicator();
                 },
               ),
-          "/test/selector": (context) => FutureBuilder<mongo.Db>(
+          // In lib/main.dart
+          // In lib/main.dart
+          "/admin_dashboard": (context) => FutureBuilder<mongo.Db>(
                 future: db,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return TestSelectorPage(title: "Test", db: snapshot.data!);
+                    return AdminDashboardPage(
+                        title: "Admin dashboard", db: snapshot.data!);
                   }
                   return const CircularProgressIndicator();
                 },
               ),
-          "/admin_dashboard": (context) {
-            final args = ModalRoute.of(context)!.settings.arguments
-                as Map<String, dynamic>?;
-            return FutureBuilder<mongo.Db>(
-              future: db,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return AdminDashboardPage(
-                    title: "Admin Dashboard",
-                    db: snapshot.data!,
-                    userId: args?['userId'] ??
-                        mongo.ObjectId(), // Use the passed userId
-                  );
-                }
-                return const CircularProgressIndicator();
-              },
-            );
-          },
         });
   }
 }

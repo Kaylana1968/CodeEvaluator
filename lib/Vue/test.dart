@@ -50,16 +50,21 @@ class _TestPageState extends State<TestPage> {
                     return Center(child: Text("Error: ${snapshot.error}"));
                   } else if (snapshot.hasData) {
                     var data = snapshot.data!;
-                    if (data["success"] && data["data"] != null && data["data"].isNotEmpty) {
-                      var categories = List<Map<String, dynamic>>.from(data["data"]);
+                    if (data["success"] &&
+                        data["data"] != null &&
+                        data["data"].isNotEmpty) {
+                      var categories =
+                          List<Map<String, dynamic>>.from(data["data"]);
                       return ListView.builder(
                         itemCount: categories.length,
                         itemBuilder: (context, index) {
-                          return displayCard(Category.fromJson(categories[index]));
+                          return displayCard(
+                              Category.fromJson(categories[index]));
                         },
                       );
                     } else {
-                      return Center(child: Text(data["message"] ?? "No data available"));
+                      return Center(
+                          child: Text(data["message"] ?? "No data available"));
                     }
                   } else {
                     return const Center(child: Text("No data available"));
@@ -77,7 +82,8 @@ class _TestPageState extends State<TestPage> {
     String label = dbData.label;
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/test/selector', arguments: {'label' :label, 'user' : user});
+        Navigator.pushNamed(context, '/test/selector',
+            arguments: {'label': label, 'user': user});
       },
       child: Card(
         child: Padding(

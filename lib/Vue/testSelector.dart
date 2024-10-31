@@ -6,7 +6,7 @@ import 'package:code_evaluator/Controller/question.dart';
 import '../Model/User.dart';
 
 class TestSelectorPage extends StatefulWidget {
-  const TestSelectorPage({super.key,required this.title, required this.db});
+  const TestSelectorPage({super.key, required this.title, required this.db});
 
   final String title;
   final mongo.Db db;
@@ -25,7 +25,8 @@ class _TestSelectorPageState extends State<TestSelectorPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final arg = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+    final arg =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
     print(arg);
     if (arg != null) {
       label = arg['label'];
@@ -35,8 +36,8 @@ class _TestSelectorPageState extends State<TestSelectorPage> {
   }
 
   Future<void> _fetchCategoryIdAndTests(String label) async {
-
-    mongo.ObjectId? id = await CategoryController.getCategoryIdByLabel(widget.db, label);
+    mongo.ObjectId? id =
+        await CategoryController.getCategoryIdByLabel(widget.db, label);
 
     if (id != null) {
       setState(() {
@@ -60,7 +61,9 @@ class _TestSelectorPageState extends State<TestSelectorPage> {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else if (snapshot.hasData) {
               var data = snapshot.data!;
-              if (data["success"] && data["data"] != null && data["data"].isNotEmpty) {
+              if (data["success"] &&
+                  data["data"] != null &&
+                  data["data"].isNotEmpty) {
                 var tests = List<Map<String, dynamic>>.from(data["data"]);
                 return ListView.builder(
                   itemCount: tests.length,
@@ -70,7 +73,8 @@ class _TestSelectorPageState extends State<TestSelectorPage> {
                   },
                 );
               } else {
-                return Center(child: Text(data["message"] ?? "No tests available"));
+                return Center(
+                    child: Text(data["message"] ?? "No tests available"));
               }
             } else {
               return const Center(child: Text("No data available"));
@@ -95,7 +99,10 @@ class TestCard extends StatelessWidget {
         Navigator.pushNamed(
           context,
           '/quiz', // Page des questions
-          arguments: {'testLabel': testLabel, 'user' : user}, // Passe le label du test en argument
+          arguments: {
+            'testLabel': testLabel,
+            'user': user
+          }, // Passe le label du test en argument
         );
       },
       child: Card(

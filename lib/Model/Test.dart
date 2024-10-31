@@ -15,12 +15,8 @@ class Test {
 
   Test(this._label, this._questions, this._category);
 
-  Map<String, dynamic> toMap(){
-    return {
-      'label': label,
-      'category': category,
-      'questions': _questions
-    };
+  Map<String, dynamic> toMap() {
+    return {'label': label, 'category': category, 'questions': _questions};
   }
 
   String get label => _label;

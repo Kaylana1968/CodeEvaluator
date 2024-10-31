@@ -2,7 +2,7 @@ import 'package:code_evaluator/Model/Question.dart';
 import 'package:code_evaluator/Model/Test.dart';
 import 'package:code_evaluator/Model/User.dart';
 
-class Score{
+class Score {
   User _user;
   Test _test;
   Map<Question, int> _mark;

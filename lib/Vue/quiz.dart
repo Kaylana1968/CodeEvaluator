@@ -44,7 +44,8 @@ class _QuizPageState extends State<QuizPage> {
     super.didChangeDependencies();
 
     // Récupère le label depuis les arguments via ModalRoute
-    final arg = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+    final arg =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
     if (arg != null) {
       testLabel = arg['testLabel'];
       user = arg['user'];
@@ -66,12 +67,15 @@ class _QuizPageState extends State<QuizPage> {
   void loadCurrentQuestion() async {
     if (test != null) {
       // Récupération de la question actuelle
-      Question question = await getQuestionForPrint(test!.questions[currentQuestionIndex]);
+      Question question =
+          await getQuestionForPrint(test!.questions[currentQuestionIndex]);
 
       // Mettre à jour selectedChoices avec la bonne longueur pour chaque question
-      selectedChoices = List.filled(question.choices.length, false); // Réinitialisation
+      selectedChoices =
+          List.filled(question.choices.length, false); // Réinitialisation
 
-      print("Selected choices length: ${selectedChoices.length}"); // Vérification de la longueur
+      print(
+          "Selected choices length: ${selectedChoices.length}"); // Vérification de la longueur
       setState(() {}); // Met à jour l'état de l'interface utilisateur
     }
   }
@@ -91,7 +95,8 @@ class _QuizPageState extends State<QuizPage> {
 
   Future<void> goToNextQuestion() async {
     if (test != null) {
-      Question question = await getQuestionForPrint(test!.questions[currentQuestionIndex]);
+      Question question =
+          await getQuestionForPrint(test!.questions[currentQuestionIndex]);
 
       List<bool> correctAnswers = [];
       for (int i = 0; i < question.choices.length; i++) {
@@ -115,9 +120,11 @@ class _QuizPageState extends State<QuizPage> {
       }
 
       // 1 si bonne réponse et 0 si mauvaise
-      int scoreForQuestion = (allCorrectSelected && !anyIncorrectSelected) ? 1 : 0;
+      int scoreForQuestion =
+          (allCorrectSelected && !anyIncorrectSelected) ? 1 : 0;
 
-      mongo.ObjectId? currentQuestionId = await getQuestionIdByLabel(widget.db, question.label);
+      mongo.ObjectId? currentQuestionId =
+          await getQuestionIdByLabel(widget.db, question.label);
 
       questionScores.add({
         "question": currentQuestionId,
@@ -186,36 +193,37 @@ class _QuizPageState extends State<QuizPage> {
     }
 
     return FutureBuilder<Question>(
-      future: getQuestionForPrint(test!.questions[currentQuestionIndex]),
-      builder: (context, snapshot) {
+        future: getQuestionForPrint(test!.questions[currentQuestionIndex]),
+        builder: (context, snapshot) {
           Question question = snapshot.data!;
           return Scaffold(
             appBar: AppBar(
-              title: Text("Question ${currentQuestionIndex + 1}/${test!.questions.length}"),
+              title: Text(
+                  "Question ${currentQuestionIndex + 1}/${test!.questions.length}"),
             ),
             body: Column(
               children: [
                 Text("Temps restant: $remainingTime s"),
                 Text(question.label),
-                Expanded( // Utilisez Expanded pour que le ListView prenne l'espace disponible
-                  child: ListView.builder(
-                    itemCount: question.choices.length,
-                    itemBuilder: (context, index) {
-                      Choice choice = question.choices[index];
-                      print("Choices length: ${question.choices.length}");
-                      print("Selected choices length: ${selectedChoices.length}");
-                      return CheckboxListTile(
-                        title: Text(choice.choiceLabel),
-                        value: selectedChoices[index],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            selectedChoices[index] = value ?? false;
-                          });
-                        },
-                      );
-                    },
-                  )
-                ),
+                Expanded(
+                    // Utilisez Expanded pour que le ListView prenne l'espace disponible
+                    child: ListView.builder(
+                  itemCount: question.choices.length,
+                  itemBuilder: (context, index) {
+                    Choice choice = question.choices[index];
+                    print("Choices length: ${question.choices.length}");
+                    print("Selected choices length: ${selectedChoices.length}");
+                    return CheckboxListTile(
+                      title: Text(choice.choiceLabel),
+                      value: selectedChoices[index],
+                      onChanged: (bool? value) {
+                        setState(() {
+                          selectedChoices[index] = value ?? false;
+                        });
+                      },
+                    );
+                  },
+                )),
                 ElevatedButton(
                   onPressed: goToNextQuestion,
                   child: const Text("Valider"),
@@ -224,7 +232,6 @@ class _QuizPageState extends State<QuizPage> {
               ],
             ),
           );
-        }
-    );
+        });
   }
 }
