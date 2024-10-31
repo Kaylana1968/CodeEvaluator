@@ -85,7 +85,7 @@ class _HomePageState extends State<HomePage> {
                     context,
                     '/admin_dashboard',
                     arguments: {
-                      'userId': widget.userId, // Pass the correct userId
+                      'userId': widget.userId,
                     },
                   );
                 },

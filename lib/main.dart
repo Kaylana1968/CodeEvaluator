@@ -1,4 +1,4 @@
-import 'package:code_evaluator/Vue/question.dart';
+import 'package:code_evaluator/Vue/quiz.dart';
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'Vue/add_test.dart';
@@ -103,12 +103,12 @@ class MyApp extends StatelessWidget {
               },
             );
           },
-          "/evaluation": (context) => FutureBuilder<mongo.Db>(
+          "/quiz": (context) => FutureBuilder<mongo.Db>(
                 future: db,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return QuestionPage(
-                        title: "Evaluation", db: snapshot.data!);
+                    return QuizPage(
+                        title: "Quiz", db: snapshot.data!);
                   }
                   return const CircularProgressIndicator();
                 },

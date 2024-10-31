@@ -31,7 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late Map<String, dynamic> result;
   late List<Map<String, dynamic>> scores;
 
-  User userghg = User("monNom", "monPrenom", "password", 4, "monMail@gmail.com", "maMaison", "maMotivation", false);
+  User user = User("monNom", "monPrenom", "password", 4, "monMail@gmail.com", "maMaison", "maMotivation", false);
 
   Widget modifyAddress() {
     Map<String, dynamic> result;
@@ -185,11 +185,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     Icons.person,
                     size: 50,
                   ),
-                  Text("${userghg .firstName} ${userghg .lastName}"),
-                  Text(userghg .age.toString()),
-                  Text(userghg .address),
-                  Text(userghg .email),
-                  Text(userghg .motivation),
+                  Text("${user.firstName} ${user.lastName}"),
+                  Text(user.age.toString()),
+                  Text(user.address),
+                  Text(user.email),
+                  Text(user.motivation),
                 ],
               ),
             ),

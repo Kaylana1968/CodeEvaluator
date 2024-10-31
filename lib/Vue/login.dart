@@ -21,8 +21,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _emailController.text = 'root@admin.com'; // Set initial value
-    _passwordController.text = 'root'; // Set initial value
   }
 
   Widget formInput() {

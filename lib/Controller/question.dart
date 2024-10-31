@@ -49,9 +49,10 @@ Future<Map<String, dynamic>> insertQuestions(mongo.Db db, Question question) asy
 
 // Récupérer la liste des questions existantes ou une question spécifique si l'ObjectId est mis en parametres
 Future<Map<String, dynamic>> getQuestion(mongo.Db db, mongo.ObjectId ?questionId) async {
-  var collection = db.collection('Questions');
+  var collection = db.collection('Question');
   if (questionId != null){
     var question = await collection.findOne({'_id' : questionId});
+    print('question $question');
     return {
       "success": true,
       "data": question,
