@@ -70,6 +70,9 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     }
                   }),
+              const SizedBox(
+                height: 4.0,
+              ),
               ElevatedButton(
                 child: const Text('Register'),
                 onPressed: () => (Navigator.pushNamed(context, '/register')),
