@@ -57,6 +57,9 @@ class _ProfilePageState extends State<ProfilePage> {
       ElevatedButton(
           child: const Text('Modify'),
           onPressed: () async {
+            setState(() {
+              user.address = addressController.text;
+            });
             result = await updateAddress(
                 widget.db, user.email, addressController.text);
             ScaffoldMessenger.of(context).showSnackBar(
@@ -162,8 +165,11 @@ class _ProfilePageState extends State<ProfilePage> {
       ElevatedButton(
           child: const Text('Modify'),
           onPressed: () async {
+            setState(() {
+              user.motivation = motivationValue;
+            });
             result =
-                await updateMotivations(widget.db, user.email, motivationValue);
+            await updateMotivations(widget.db, user.email, motivationValue);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("${result['message']}")),
             );

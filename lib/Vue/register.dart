@@ -76,6 +76,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               labelText: "Password",
             ),
             controller: _passwordController,
+            obscureText: true,
             validator: (value) {
               final passwordRegex = RegExp(
                   r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$");
@@ -93,6 +94,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               labelText: "Confirm password",
             ),
             controller: _confirmPasswordController,
+            obscureText: true,
             validator: (value) => value!.isEmpty ? 'Enter your address' : null),
         TextFormField(
           decoration: const InputDecoration(

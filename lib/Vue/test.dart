@@ -34,7 +34,7 @@ class _TestPageState extends State<TestPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: headerDisplay(context, widget.title, true),
+      appBar: headerDisplay(context, widget.title, true, user),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

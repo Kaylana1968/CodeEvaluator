@@ -37,6 +37,7 @@ class _LoginPageState extends State<LoginPage> {
             labelText: "Password",
           ),
           controller: _passwordController,
+          obscureText: true,
           validator: (value) => value!.isEmpty ? 'Enter your password' : null,
         ),
       ],

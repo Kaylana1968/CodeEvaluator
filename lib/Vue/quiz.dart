@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:code_evaluator/Controller/header.dart';
 import 'package:code_evaluator/Controller/profile.dart';
 import 'package:code_evaluator/Controller/question.dart';
 import 'package:code_evaluator/Controller/quiz.dart';
@@ -174,7 +175,7 @@ class _QuizPageState extends State<QuizPage> {
   Widget build(BuildContext context) {
     if (testCompleted) {
       return Scaffold(
-        appBar: AppBar(title: Text(widget.title)),
+        appBar: headerDisplay(context, widget.title, true, user),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -182,7 +183,7 @@ class _QuizPageState extends State<QuizPage> {
               Text("Test complété. Score final: $totalScore"),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/');
+                  Navigator.pushNamed(context, '/', arguments: user);
                 },
                 child: const Text("Retour à l'accueil"),
               ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-AppBar headerDisplay(BuildContext context, String title, bool BackButton) {
+import '../Model/User.dart';
+
+AppBar headerDisplay(BuildContext context, String title, bool BackButton, User ?user) {
   return AppBar(
     backgroundColor: Theme.of(context).colorScheme.inversePrimary,
     title: Text(title),
@@ -11,7 +13,7 @@ AppBar headerDisplay(BuildContext context, String title, bool BackButton) {
           backgroundColor: Colors.deepPurple,
           foregroundColor: Colors.black,
         ),
-        onPressed: () => (Navigator.pushNamed(context, '/profile')),
+        onPressed: () => (Navigator.pushNamed(context, '/profile', arguments: user)),
         icon: const Icon(
           Icons.person,
           size: 30,
