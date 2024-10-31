@@ -29,20 +29,20 @@ class _ProfilePageState extends State<ProfilePage> {
 
   User user = User("", "", "", 0, "", "", "", false);
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
 
-    final args = ModalRoute.of(context)?.settings.arguments as User?;
+  //   final args = ModalRoute.of(context)?.settings.arguments as User?;
 
-    if (args == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacementNamed(context, '/login');
-      });
-    } else {
-      user = args;
-    }
-  }
+  //   if (args == null) {
+  //     WidgetsBinding.instance.addPostFrameCallback((_) {
+  //       Navigator.pushReplacementNamed(context, '/login');
+  //     });
+  //   } else {
+  //     user = args;
+  //   }
+  // }
 
   Widget modifyAddress(User user) {
     Map<String, dynamic> result;

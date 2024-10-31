@@ -15,20 +15,20 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   User user = User("", "", "", 0, "", "", "", false);
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
 
-    final args = ModalRoute.of(context)?.settings.arguments as User?;
+  //   final args = ModalRoute.of(context)?.settings.arguments as User?;
 
-    if (args == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacementNamed(context, '/login');
-      });
-    } else {
-      user = args;
-    }
-  }
+  //   if (args == null) {
+  //     WidgetsBinding.instance.addPostFrameCallback((_) {
+  //       Navigator.pushReplacementNamed(context, '/login');
+  //     });
+  //   } else {
+  //     user = args;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

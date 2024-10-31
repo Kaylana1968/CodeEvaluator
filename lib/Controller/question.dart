@@ -88,20 +88,50 @@ Future<Map<String, dynamic>> getAllCategory(mongo.Db db) async {
 // Récupérer la liste des questions existantes ou une question spécifique si l'ObjectId est mis en parametres
 Future<Map<String, dynamic>> getQuestion(
     mongo.Db db, mongo.ObjectId? questionId) async {
-  var collection = db.collection('Questions');
+  final collection = db.collection('Question');
   if (questionId != null) {
-    var question = await collection.findOne({'_id': questionId});
+    final question = await collection.findOne({'_id': questionId});
     return {
       "success": true,
       "data": question,
       "message": "Question successfully added"
     };
   } else {
-    var questionsList = await collection.find().toList();
+    final questionsList = await collection.find().toList();
     return {
       "success": true,
       "data": questionsList,
       "message": "Question successfully added"
     };
   }
+}
+
+Future<Map<String, dynamic>> getQuestionList(
+    mongo.Db db, List<mongo.ObjectId> questionIds) async {
+  final collection = db.collection('Question');
+
+  Future<List<Question>> subGetQuestionList() async {
+    List<Future<Question>> questions =
+        List<Future<Question>>.from(questionIds.map((id) async {
+      final questionResult = await collection.findOne({'_id': id});
+
+      Question question = Question(
+          questionResult!['label'],
+          List<Choice>.from(questionResult['choices'].map(
+              (choice) => Choice(choice['choiceLabel'], choice['isGood']))),
+          questionResult['category']);
+
+      return question;
+    }).toList());
+
+    return await Future.wait(questions);
+  }
+
+  List<Question> questions = await subGetQuestionList();
+
+  return {
+    "success": true,
+    "data": questions,
+    "message": "Question successfully added"
+  };
 }

@@ -5,29 +5,59 @@ import '../Model/User.dart';
 import '../Controller/question.dart';
 import '../Controller/test.dart';
 
-class AddTestPage extends StatefulWidget {
-  const AddTestPage({super.key, required this.title, required this.db});
+class EditTestPage extends StatefulWidget {
+  const EditTestPage({super.key, required this.title, required this.db});
 
   final String title;
   final mongo.Db db;
 
   @override
-  State<AddTestPage> createState() => _AddTestPageState();
+  State<EditTestPage> createState() => _EditTestPageState();
 }
 
-class _AddTestPageState extends State<AddTestPage> {
+class _EditTestPageState extends State<EditTestPage> {
   final formKey = GlobalKey<FormState>();
-  String testLabel = "";
+  final TextEditingController testLabelController = TextEditingController();
   List<Question> questions = [];
   List<Map<String, dynamic>> categories = [];
   Map<String, dynamic> category = {};
   List<Question> existingQuestions = [];
   List<Question> categoryQuestions = [];
 
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+
+  //   final args = ModalRoute.of(context)?.settings.arguments as User?;
+
+  //   if (args == null || !args.admin) {
+  //     WidgetsBinding.instance.addPostFrameCallback((_) {
+  //       Navigator.pushReplacementNamed(context, '/login');
+  //     });
+  //   }
+  // }
+
   void initVariables() async {
+    // final args =
+    //     ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+
+    // final mongo.ObjectId testId = args['testId'];
+
+    final mongo.ObjectId testId =
+        mongo.ObjectId.fromHexString("67214a90d4839715f9e14d78");
+
+    final testResult = await getTest(widget.db, testId);
+    final test = testResult['data'];
+    testLabelController.text = test['label'];
+
+    final testQuestionResult = await getQuestionList(
+        widget.db, List<mongo.ObjectId>.from(test['questions']));
+    questions = testQuestionResult['data'];
+
     final categoryResult = await getAllCategory(widget.db);
     categories = categoryResult['data'];
-    category = categories.first;
+    category = categories
+        .firstWhere((category) => category['_id'] == test['category']);
 
     final questionResult = await getAllQuestion(widget.db);
     existingQuestions = questionResult['data'];
@@ -165,13 +195,12 @@ class _AddTestPageState extends State<AddTestPage> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         TextFormField(
-                            decoration:
-                                const InputDecoration(labelText: "Test label"),
-                            validator: (value) =>
-                                value!.isEmpty ? "Enter a label" : null,
-                            onChanged: (value) => setState(() {
-                                  testLabel = value;
-                                })),
+                          controller: testLabelController,
+                          decoration:
+                              const InputDecoration(labelText: "Test label"),
+                          validator: (value) =>
+                              value!.isEmpty ? "Enter a label" : null,
+                        ),
                         DropdownButton<Map<String, dynamic>>(
                           isExpanded: true,
                           value: category,
@@ -199,7 +228,10 @@ class _AddTestPageState extends State<AddTestPage> {
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
                               Map<String, dynamic> result = await createTest(
-                                  widget.db, testLabel, questions, category);
+                                  widget.db,
+                                  testLabelController.text,
+                                  questions,
+                                  category);
 
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text(result['message'])),
