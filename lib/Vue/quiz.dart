@@ -27,38 +27,47 @@ class _QuizPageState extends State<QuizPage> {
   int remainingTime = 30;
   bool testCompleted = false;
   Test? test;
+  List<Question>? questions;
+  Question question = Question('', [], mongo.ObjectId());
   List<Map<String, dynamic>> questionScores = [];
   List<bool> selectedChoices = [];
   User user = User("", "", "", 0, "", "", "", false);
+
+  bool hasInit = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // Récupère le label depuis les arguments via ModalRoute
-    final arg =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
-    if (arg != null) {
-      testLabel = arg['testLabel'];
-      user = arg['user'];
-      fetchTestData();
+    if (!hasInit) {
+      final arg =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+      if (arg != null) {
+        testLabel = arg['testLabel'];
+        user = arg['user'];
+        fetchTestData();
+      }
     }
   }
 
   void fetchTestData() async {
     Map<String, dynamic> result = await getTestByLabel(widget.db, testLabel);
     test = Test.fromMap(result['data']);
+
     if (test != null) {
+      final questionResult = await getQuestionList(widget.db, test!.questions);
+      questions = questionResult['data'];
       startTimer();
       loadCurrentQuestion();
     }
+
+    hasInit = true;
   }
 
   void loadCurrentQuestion() async {
     if (test != null) {
       // Récupération de la question actuelle
-      Question question =
-          await getQuestionForPrint(test!.questions[currentQuestionIndex]);
+      question = questions![currentQuestionIndex];
 
       // Mettre à jour selectedChoices avec la bonne longueur pour chaque question
       selectedChoices =
@@ -83,33 +92,21 @@ class _QuizPageState extends State<QuizPage> {
 
   Future<void> goToNextQuestion() async {
     if (test != null && !testCompleted) {
-      Question question =
-          await getQuestionForPrint(test!.questions[currentQuestionIndex]);
-
       List<bool> correctAnswers = [];
       for (int i = 0; i < question.choices.length; i++) {
         correctAnswers.add(question.choices[i].isGood);
       }
 
-      bool allCorrectSelected = true;
-      for (int i = 0; i < correctAnswers.length; i++) {
-        if (correctAnswers[i] && !selectedChoices[i]) {
-          allCorrectSelected = false;
-          break;
-        }
-      }
-
       bool anyIncorrectSelected = false;
       for (int i = 0; i < correctAnswers.length; i++) {
-        if (!correctAnswers[i] && selectedChoices[i]) {
+        if (correctAnswers[i] != selectedChoices[i]) {
           anyIncorrectSelected = true;
           break;
         }
       }
 
       // 1 si bonne réponse et 0 si mauvaise
-      int scoreForQuestion =
-          (allCorrectSelected && !anyIncorrectSelected) ? 1 : 0;
+      int scoreForQuestion = !anyIncorrectSelected ? 1 : 0;
 
       mongo.ObjectId? currentQuestionId =
           await getQuestionIdByLabel(widget.db, question.label);
@@ -124,6 +121,7 @@ class _QuizPageState extends State<QuizPage> {
       if (currentQuestionIndex < test!.questions.length - 1) {
         setState(() {
           currentQuestionIndex++;
+          question = questions![currentQuestionIndex];
           remainingTime = 30;
         });
         startTimer();
@@ -180,44 +178,44 @@ class _QuizPageState extends State<QuizPage> {
       );
     }
 
-    return FutureBuilder<Question>(
-        future: getQuestionForPrint(test!.questions[currentQuestionIndex]),
-        builder: (context, snapshot) {
-          Question question = snapshot.data!;
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(
-                  "Question ${currentQuestionIndex + 1}/${test!.questions.length}"),
-            ),
-            body: Column(
-              children: [
-                Text("Temps restant: $remainingTime s"),
-                Text(question.label),
-                Expanded(
-                    // Utilisez Expanded pour que le ListView prenne l'espace disponible
-                    child: ListView.builder(
-                  itemCount: question.choices.length,
-                  itemBuilder: (context, index) {
-                    Choice choice = question.choices[index];
-                    return CheckboxListTile(
-                      title: Text(choice.choiceLabel),
-                      value: selectedChoices[index],
-                      onChanged: (bool? value) {
-                        setState(() {
-                          selectedChoices[index] = value ?? false;
-                        });
-                      },
-                    );
-                  },
-                )),
-                ElevatedButton(
-                  onPressed: goToNextQuestion,
-                  child: const Text("Valider"),
-                ),
-                Text("Score actuel: $totalScore"),
-              ],
-            ),
-          );
-        });
+    if (test == null) {
+      return const CircularProgressIndicator();
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+            "Question ${currentQuestionIndex + 1}/${test!.questions.length}"),
+      ),
+      body: Column(
+        children: [
+          Text("Temps restant: $remainingTime s"),
+          Text(question.label),
+          Expanded(
+              // Utilisez Expanded pour que le ListView prenne l'espace disponible
+              child: ListView.builder(
+            itemCount: question.choices.length,
+            itemBuilder: (context, index) {
+              Choice choice = question.choices[index];
+
+              return CheckboxListTile(
+                title: Text(choice.choiceLabel),
+                value: selectedChoices[index],
+                onChanged: (bool? value) {
+                  setState(() {
+                    selectedChoices[index] = value!;
+                  });
+                },
+              );
+            },
+          )),
+          ElevatedButton(
+            onPressed: goToNextQuestion,
+            child: const Text("Valider"),
+          ),
+          Text("Score actuel: $totalScore"),
+        ],
+      ),
+    );
   }
 }
