@@ -1,14 +1,14 @@
+import 'package:code_evaluator/Model/Category.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Model/Category.dart';
 import '../Model/Question.dart';
 
-Future<Map<String, dynamic>> getAllTestByCategory(
-    mongo.Db db, Category category) async {
+Future<Map<String, dynamic>> getAllTestByCategory(mongo.Db db, mongo.ObjectId categoryId) async {
   var collection = db.collection('Test');
   try {
-    var categoryId = await collection.findOne({'label': category.label});
-    var results =
-        await collection.find({'category': categoryId?['_id']}).toList();
+    var results = await collection.find({
+      'category': categoryId
+    }).toList();
 
     if (results.isNotEmpty) {
       return {
@@ -60,6 +60,22 @@ Future<Map<String, dynamic>> getAllQuestion(mongo.Db db) async {
     };
   }
 }
+Future<Map<String, dynamic>> insertQuestions(mongo.Db db, Question question) async {
+  var collection = db.collection('Question');
+  try {
+    await collection.insert(question.toMap());
+    return {
+      "success": true,
+      "message": "Question successfully added"
+    };
+  } catch (e) {
+    print("Erreur lors de l'insertion : $e");
+    return {
+      "success": false,
+      "message": "An error occurred during creation of the question"
+    };
+  }
+}
 
 Future<Map<String, dynamic>> getAllCategory(mongo.Db db) async {
   final collection = db.collection('Category');
@@ -86,9 +102,8 @@ Future<Map<String, dynamic>> getAllCategory(mongo.Db db) async {
 }
 
 // Récupérer la liste des questions existantes ou une question spécifique si l'ObjectId est mis en parametres
-Future<Map<String, dynamic>> getQuestion(
-    mongo.Db db, mongo.ObjectId? questionId) async {
-  var collection = db.collection('Questions');
+Future<Map<String, dynamic>> getQuestion(mongo.Db db, mongo.ObjectId? questionId) async {
+  var collection = db.collection('Question');
   if (questionId != null) {
     var question = await collection.findOne({'_id': questionId});
     return {

@@ -1,4 +1,5 @@
 import 'package:code_evaluator/Vue/quiz.dart';
+import 'package:code_evaluator/Vue/testSelector.dart';
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'Vue/add_test.dart';
@@ -81,7 +82,7 @@ class MyApp extends StatelessWidget {
                 future: db,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return TestPage(title: "Test", db: snapshot.data!);
+                    return TestPage(title: "Category", db: snapshot.data!);
                   }
                   return const CircularProgressIndicator();
                 },
@@ -110,8 +111,15 @@ class MyApp extends StatelessWidget {
                   return const CircularProgressIndicator();
                 },
               ),
-          // In lib/main.dart
-          // In lib/main.dart
+          "/test/selector": (context) => FutureBuilder<mongo.Db>(
+                future: db,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return TestSelectorPage(title: "Test", db: snapshot.data!);
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
           "/admin_dashboard": (context) {
             final args = ModalRoute.of(context)!.settings.arguments
                 as Map<String, dynamic>?;
