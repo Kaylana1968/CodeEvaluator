@@ -2,6 +2,7 @@ import 'package:code_evaluator/Vue/question.dart';
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'Vue/add_test.dart';
+import 'Vue/edit_test.dart';
 import 'Vue/register.dart';
 import 'Vue/home.dart';
 import 'Vue/login.dart';
@@ -44,6 +45,15 @@ class MyApp extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return AddTestPage(title: "add-test", db: snapshot.data!);
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
+          "/edit-test": (context) => FutureBuilder<mongo.Db>(
+                future: db,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return EditTestPage(title: "Register", db: snapshot.data!);
                   }
                   return const CircularProgressIndicator();
                 },

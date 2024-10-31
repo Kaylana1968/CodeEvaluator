@@ -32,13 +32,15 @@ Future<String> register(
 
 // Insérer un utilisateur (Inscription)
 Future<Map<String, dynamic>> insertUser(mongo.Db db, User user) async {
-  var collection = db.collection('User');
+  final collection = db.collection('User');
   if (await isUniqueEmail(db, user)) {
     try {
       await collection.insert(user.toMap());
+
       return {"success": true, "message": "Registered as ${user.firstName}"};
     } catch (e) {
       print("Erreur lors de l'insertion : $e");
+
       return {
         "success": false,
         "message": "An error occurred during registration"
@@ -51,12 +53,14 @@ Future<Map<String, dynamic>> insertUser(mongo.Db db, User user) async {
 
 // Verification si email est libre
 Future<bool> isUniqueEmail(mongo.Db db, User user) async {
-  var collection = db.collection('User');
+  final collection = db.collection('User');
   try {
-    var result = await collection.findOne({'email': user.email});
+    final result = await collection.findOne({'email': user.email});
+
     return result == null;
   } catch (e) {
     print('Erreur lors de la récupération : $e');
+
+    return false;
   }
-  return false;
 }

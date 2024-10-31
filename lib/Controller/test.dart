@@ -52,3 +52,25 @@ Future<Map<String, dynamic>> createTest(mongo.Db db, String label,
     return {"success": false, "message": "An error occurred during insertion"};
   }
 }
+
+Future<Map<String, dynamic>> getTest(mongo.Db db, mongo.ObjectId testId) async {
+  final collection = db.collection('Test');
+
+  try {
+    final results = await collection.findOne({'_id': testId});
+
+    return {
+      "success": true,
+      "data": results,
+      "message": "Retrieved all records successfully"
+    };
+  } catch (e) {
+    print('Erreur lors de la récupération : $e');
+
+    return {
+      "success": false,
+      "data": null,
+      "message": "An error occurred during connection"
+    };
+  }
+}

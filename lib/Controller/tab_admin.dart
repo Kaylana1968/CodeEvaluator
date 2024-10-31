@@ -28,8 +28,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   Future<User> fetchAdminUser() async {
-    var collection = widget.db.collection('User');
-    var adminData = await collection.findOne(mongo.where.id(widget.userId));
+    final collection = widget.db.collection('User');
+    final adminData = await collection.findOne(mongo.where.id(widget.userId));
 
     if (adminData != null) {
       return User.fromMap(adminData);
