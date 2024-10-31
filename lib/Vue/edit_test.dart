@@ -24,18 +24,18 @@ class _EditTestPageState extends State<EditTestPage> {
   List<Question> existingQuestions = [];
   List<Question> categoryQuestions = [];
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-  //   final args = ModalRoute.of(context)?.settings.arguments as User?;
+    final args = ModalRoute.of(context)?.settings.arguments as User?;
 
-  //   if (args == null || !args.admin) {
-  //     WidgetsBinding.instance.addPostFrameCallback((_) {
-  //       Navigator.pushReplacementNamed(context, '/login');
-  //     });
-  //   }
-  // }
+    if (args == null || !args.admin) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacementNamed(context, '/login');
+      });
+    }
+  }
 
   void initVariables() async {
     // final args =

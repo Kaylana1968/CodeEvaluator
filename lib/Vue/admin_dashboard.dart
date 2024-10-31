@@ -20,6 +20,23 @@ class AdminDashboardPage extends StatefulWidget {
 }
 
 class _AdminDashboardPageState extends State<AdminDashboardPage> {
+  User? user;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final args = ModalRoute.of(context)?.settings.arguments as User?;
+
+    if (args == null || user?.admin == false) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacementNamed(context, '/login');
+      });
+    } else {
+      user = args;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,8 +44,15 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         title: Text(widget.title),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Liste de tout les Scores:"),
+          ElevatedButton(
+              onPressed: () =>
+                  Navigator.pushNamed(context, "/add-test", arguments: user!),
+              child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [Icon(Icons.add), Text("Add a test")])),
+          const Text("All scores list:"),
           Expanded(
             // Utiliser Expanded pour le ListView
             child: FutureBuilder<Widget>(
@@ -76,6 +100,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         if (testResult['success']) {
           // Ajoutez les détails du test et le score à un objet
           var scoreInfo = {
+            '_id': score['test'],
             'test': testResult['data'],
             'totalUser': totalUser,
             'maxPoints': maxPoints,
@@ -102,15 +127,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         return Card(
           margin: const EdgeInsets.all(10.0),
           child: ListTile(
-            title: Text(test['label']),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('${totalUser.toString()}/${maxPoints.toString()}'),
-                Text(formattedDate),
-              ],
-            ),
-          ),
+              title: Text(test['label']),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('${totalUser.toString()}/${maxPoints.toString()}'),
+                  Text(formattedDate),
+                ],
+              )),
         );
       }).toList();
 
