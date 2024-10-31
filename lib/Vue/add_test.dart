@@ -175,7 +175,7 @@ class _AddTestPageState extends State<AddTestPage> {
                 child: Form(
                     key: formKey,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextFormField(
                             decoration:
