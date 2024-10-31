@@ -37,43 +37,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ElevatedButton(
-              onPressed: () =>
-                  Navigator.pushNamed(context, "/add-test", arguments: user!),
-              child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [Icon(Icons.add), Text("Add a test")])),
-          const Text("All scores list:"),
-          Expanded(
-            // Utiliser Expanded pour le ListView
-            child: FutureBuilder<Widget>(
-              future: _scoreList(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text("Erreur: ${snapshot.error}"));
-                } else if (!snapshot.hasData) {
-                  return const Center(child: Text("Aucun score trouvé."));
-                }
-                return snapshot.data!;
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Future<Widget> _scoreList() async {
     var result = await getScores(widget.db);
     if (result['success']) {
@@ -145,5 +108,90 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     } else {
       return const Text('Aucun score disponible.');
     }
+  }
+
+  Future<Widget> _testList() async {
+    var result = await getTest(widget.db);
+    if (result['success']) {
+      List<Map<String, dynamic>> tests = result['data'];
+
+      // Retournez une ListView avec tous les widgets construits
+      return ListView.builder(
+          itemCount: tests.length,
+          itemBuilder: (context, index) {
+            final test = tests[index];
+
+            return Card(
+                margin: const EdgeInsets.all(10.0),
+                child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(test['label']),
+                          IconButton(
+                              onPressed: () => Navigator.pushNamed(
+                                  context, "/edit-test",
+                                  arguments: {'user': user!, 'testId': test['_id']}),
+                              icon: const Icon(Icons.edit)),
+                        ])));
+          });
+    } else {
+      return const Text('Aucun score disponible.');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ElevatedButton(
+              onPressed: () =>
+                  Navigator.pushNamed(context, "/add-test", arguments: user!),
+              child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [Icon(Icons.add), Text("Add a test")])),
+          const Text("All tests list:"),
+          Expanded(
+            // Utiliser Expanded pour le ListView
+            child: FutureBuilder<Widget>(
+              future: _testList(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text("Erreur: ${snapshot.error}"));
+                } else if (!snapshot.hasData) {
+                  return const Center(child: Text("Aucun score trouvé."));
+                }
+                return snapshot.data!;
+              },
+            ),
+          ),
+          const Text("All scores list:"),
+          Expanded(
+            // Utiliser Expanded pour le ListView
+            child: FutureBuilder<Widget>(
+              future: _scoreList(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text("Erreur: ${snapshot.error}"));
+                } else if (!snapshot.hasData) {
+                  return const Center(child: Text("Aucun score trouvé."));
+                }
+                return snapshot.data!;
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Model/Question.dart';
-import '../Model/User.dart';
 import '../Controller/question.dart';
 import '../Controller/test.dart';
 
@@ -24,29 +23,27 @@ class _EditTestPageState extends State<EditTestPage> {
   List<Question> existingQuestions = [];
   List<Question> categoryQuestions = [];
 
+  mongo.ObjectId? testId;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final args = ModalRoute.of(context)?.settings.arguments as User?;
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
-    if (args == null || !args.admin) {
+    if (args?['user'] == null || !args?['user'].admin) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushReplacementNamed(context, '/login');
       });
     }
+
+    testId = args!['testId'];
+    initVariables();
   }
 
   void initVariables() async {
-    // final args =
-    //     ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-
-    // final mongo.ObjectId testId = args['testId'];
-
-    final mongo.ObjectId testId =
-        mongo.ObjectId.fromHexString("67214a90d4839715f9e14d78");
-
-    final testResult = await getTest(widget.db, testId);
+    final testResult = await getTest(widget.db, testId!);
     final test = testResult['data'];
     testLabelController.text = test['label'];
 
@@ -67,12 +64,6 @@ class _EditTestPageState extends State<EditTestPage> {
         .toList();
 
     setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    initVariables();
   }
 
   Widget _buildChoiceRow(Question question, int index) {
