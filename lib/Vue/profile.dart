@@ -67,10 +67,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<Widget> _scoreList() async {
-    mongo.ObjectId userId =
-        mongo.ObjectId.fromHexString('67213c1d50d27b5692000000');
+    final userId = await getUserIdByEmail(widget.db, user.email);
+    final result = await getScore(userId!, widget.db);
 
-    var result = await getScore(userId, widget.db);
     if (result['success']) {
       List<Map<String, dynamic>> scores = result['data'];
       List<Map<String, dynamic>> tests = [];
