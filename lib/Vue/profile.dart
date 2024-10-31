@@ -1,11 +1,8 @@
-import 'dart:ffi';
-import 'package:code_evaluator/Model/Score.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Model/User.dart';
 import '../Controller/profile.dart';
-import 'package:intl/intl.dart';
-import 'package:code_evaluator/Controller/profile.dart';
 
 const List<String> motivations = [
   "Poursuite d'études",
@@ -60,9 +57,6 @@ class _ProfilePageState extends State<ProfilePage> {
       ElevatedButton(
           child: const Text('Modify'),
           onPressed: () async {
-            setState(() {
-              user.address = addressController.text;
-            });
             result = await updateAddress(
                 widget.db, user.email, addressController.text);
             ScaffoldMessenger.of(context).showSnackBar(
@@ -73,9 +67,10 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<Widget> _scoreList() async {
-    mongo.ObjectId? userId = await getUserIdByEmail(widget.db, user.email);
+    mongo.ObjectId userId =
+        mongo.ObjectId.fromHexString('67213c1d50d27b5692000000');
 
-    var result = await getScore(userId!, widget.db);
+    var result = await getScore(userId, widget.db);
     if (result['success']) {
       List<Map<String, dynamic>> scores = result['data'];
       List<Map<String, dynamic>> tests = [];
@@ -95,7 +90,9 @@ class _ProfilePageState extends State<ProfilePage> {
           totalUser += question['points'];
         }
 
+        print('scoreTest ${score['test']}');
         var testResult = await getTestById(widget.db, score['test']);
+        print('testresult $testResult');
 
         if (testResult['success']) {
           // Ajoutez les détails du test et le score à un objet
@@ -107,13 +104,13 @@ class _ProfilePageState extends State<ProfilePage> {
           };
           tests.add(scoreInfo);
         } else {
-          return const Text('No score found');
+          return const Text('Aucun score disponible pour ce test.');
         }
       }
 
       // Vérifiez si 'tests' est vide avant de construire la ListView
       if (tests.isEmpty) {
-        return const Text('No score found');
+        return const Text('Aucun test disponible.');
       }
 
       // Créez une liste de widgets à partir des résultats récupérés
@@ -143,7 +140,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: scoreWidgets,
       );
     } else {
-      return const Text('no score found');
+      return const Text('Aucun score disponible.');
     }
   }
 
@@ -166,9 +163,6 @@ class _ProfilePageState extends State<ProfilePage> {
       ElevatedButton(
           child: const Text('Modify'),
           onPressed: () async {
-            setState(() {
-              user.motivation = motivationValue;
-            });
             result =
                 await updateMotivations(widget.db, user.email, motivationValue);
             ScaffoldMessenger.of(context).showSnackBar(
