@@ -66,13 +66,14 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 70.0),
             ElevatedButton(
                 onPressed: () => (Navigator.pushNamed(context, '/test')),
-                child: const Text("Evaluation")),
+                child: const Text("Pass a Test")),
             const SizedBox(height: 40.0),
-            ElevatedButton(
-                onPressed: () => (Navigator.pushNamed(context, '/profile')),
-                child: const Text("Graphic")),
-            const SizedBox(height: 40.0),
-            // In lib/Vue/Home.dart
+
+            if (user.admin)
+              ElevatedButton(
+                  onPressed: () => (Navigator.pushNamed(context, '/profile')),
+                  child: const Text("Graphic")),
+                  const SizedBox(height: 40.0),
             if (user.admin)
               ElevatedButton(
                 onPressed: () {

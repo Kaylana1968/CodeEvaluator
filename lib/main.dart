@@ -87,8 +87,6 @@ class MyApp extends StatelessWidget {
                 },
               ),
           "/": (context) {
-            final args = ModalRoute.of(context)!.settings.arguments
-                as Map<String, dynamic>?;
             return FutureBuilder<mongo.Db>(
               future: db,
               builder: (context, snapshot) {
@@ -96,7 +94,6 @@ class MyApp extends StatelessWidget {
                   return HomePage(
                     title: "Home",
                     db: snapshot.data!,
-                    userId: args?['userId'] ?? mongo.ObjectId(),
                   );
                 }
                 return const CircularProgressIndicator();

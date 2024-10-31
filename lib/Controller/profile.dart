@@ -110,3 +110,14 @@ Future<Map<String, dynamic>> getTestById(mongo.Db db, mongo.ObjectId testId) asy
     };
   }
 }
+
+Future<mongo.ObjectId?> getUserIdByEmail(mongo.Db db, String email) async{
+  var collection = db.collection('User');
+  try {
+    var result = await collection.findOne({'email' : email});
+    return result?['_id'];
+  } catch (e) {
+    print('Erreur lors de la récupération : $e');
+    return null;
+  }
+}

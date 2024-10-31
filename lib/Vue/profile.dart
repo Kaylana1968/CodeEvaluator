@@ -60,20 +60,24 @@ class _ProfilePageState extends State<ProfilePage> {
       ElevatedButton(
           child: const Text('Modify'),
           onPressed: () async {
+            setState(() {
+              user.address = addressController.text;
+            });
             result = await updateAddress(
                 widget.db, user.email, addressController.text);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("${result['message']}")),
             );
+
           })
     ]);
   }
 
   Future<Widget> _scoreList() async {
-    mongo.ObjectId userId =
-        mongo.ObjectId.fromHexString('67213c1d50d27b5692000000');
 
-    var result = await getScore(userId, widget.db);
+    mongo.ObjectId? userId = await getUserIdByEmail(widget.db, user.email);
+
+    var result = await getScore(userId!, widget.db);
     if (result['success']) {
       print(result);
       List<Map<String, dynamic>> scores = result['data'];
@@ -111,13 +115,13 @@ class _ProfilePageState extends State<ProfilePage> {
           };
           tests.add(scoreInfo);
         } else {
-          return const Text('Aucun score disponible pour ce test.');
+          return const Text('No score found');
         }
       }
 
       // Vérifiez si 'tests' est vide avant de construire la ListView
       if (tests.isEmpty) {
-        return const Text('Aucun test disponible.');
+        return const Text('No score found');
       }
 
       // Créez une liste de widgets à partir des résultats récupérés
@@ -147,7 +151,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: scoreWidgets,
       );
     } else {
-      return const Text('Aucun score disponible.');
+      return const Text('no score found');
     }
   }
 
@@ -170,6 +174,9 @@ class _ProfilePageState extends State<ProfilePage> {
       ElevatedButton(
           child: const Text('Modify'),
           onPressed: () async {
+            setState(() {
+              user.motivation = motivationValue;
+            });
             result =
                 await updateMotivations(widget.db, user.email, motivationValue);
             ScaffoldMessenger.of(context).showSnackBar(

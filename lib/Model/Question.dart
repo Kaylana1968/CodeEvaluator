@@ -43,6 +43,10 @@ class Question {
 
   Question(this._label, this._choices, this._category);
 
+  Question.clone(Question other)
+      : _label = other.label,
+        _choices = List<Choice>.from(other.choices),
+        _category = other.category;
 
   Map<String, dynamic> toMap() {
     return {
