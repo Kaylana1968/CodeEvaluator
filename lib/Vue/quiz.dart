@@ -31,15 +31,6 @@ class _QuizPageState extends State<QuizPage> {
   List<bool> selectedChoices = [];
   User user = User("", "", "", 0, "", "", "", false);
 
-  /*
-  @override
-  void initState() {
-    super.initState();
-    fetchTestData();
-  }
-
-   */
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -55,8 +46,6 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   void fetchTestData() async {
-    print(testLabel);
-    String label = "HTML avancé";
     Map<String, dynamic> result = await getTestByLabel(widget.db, testLabel);
     test = Test.fromMap(result['data']);
     if (test != null) {
@@ -75,8 +64,6 @@ class _QuizPageState extends State<QuizPage> {
       selectedChoices =
           List.filled(question.choices.length, false); // Réinitialisation
 
-      print(
-          "Selected choices length: ${selectedChoices.length}"); // Vérification de la longueur
       setState(() {}); // Met à jour l'état de l'interface utilisateur
     }
   }
@@ -212,8 +199,6 @@ class _QuizPageState extends State<QuizPage> {
                   itemCount: question.choices.length,
                   itemBuilder: (context, index) {
                     Choice choice = question.choices[index];
-                    print("Choices length: ${question.choices.length}");
-                    print("Selected choices length: ${selectedChoices.length}");
                     return CheckboxListTile(
                       title: Text(choice.choiceLabel),
                       value: selectedChoices[index],
