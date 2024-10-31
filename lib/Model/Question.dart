@@ -1,6 +1,7 @@
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
-class Choice {
+
+class Choice{
   String _choiceLabel;
   bool _isGood;
 
@@ -25,13 +26,15 @@ class Choice {
     _choiceLabel = value;
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap(){
     return {
       'choiceLabel': choiceLabel,
       'isGood': isGood,
     };
   }
+
 }
+
 
 class Question {
   String _label;
@@ -40,10 +43,6 @@ class Question {
 
   Question(this._label, this._choices, this._category);
 
-  Question.clone(Question other)
-      : _label = other.label,
-        _choices = List<Choice>.from(other.choices),
-        _category = other.category;
 
   Map<String, dynamic> toMap() {
     return {
@@ -80,4 +79,5 @@ class Question {
   set category(mongo.ObjectId value) {
     _category = value;
   }
+
 }

@@ -1,8 +1,11 @@
+import 'dart:ffi';
+import 'package:code_evaluator/Model/Score.dart';
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Model/User.dart';
 import '../Controller/profile.dart';
 import 'package:intl/intl.dart';
+import 'package:code_evaluator/Controller/profile.dart';
 
 const List<String> motivations = [
   "Poursuite d'études",

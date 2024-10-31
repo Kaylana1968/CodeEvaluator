@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                     context,
                     '/admin_dashboard',
                     arguments: {
-                      'user': user,
+                      'userId': user,
                     },
                   );
                 },
