@@ -50,6 +50,7 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
+        automaticallyImplyLeading: false,
       ),
       body: Container(
           margin: const EdgeInsets.all(16.0),

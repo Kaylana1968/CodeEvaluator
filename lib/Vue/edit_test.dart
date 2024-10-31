@@ -183,7 +183,7 @@ class _EditTestPageState extends State<EditTestPage> {
                 child: Form(
                     key: formKey,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextFormField(
                           controller: testLabelController,
@@ -215,6 +215,7 @@ class _EditTestPageState extends State<EditTestPage> {
                           },
                         ),
                         _buildQuestions(questions),
+                        const SizedBox(height: 24.0),
                         ElevatedButton(
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
@@ -229,7 +230,7 @@ class _EditTestPageState extends State<EditTestPage> {
                               );
                             }
                           },
-                          child: const Text("Create test"),
+                          child: const Text("Update test"),
                         )
                       ],
                     )))),
