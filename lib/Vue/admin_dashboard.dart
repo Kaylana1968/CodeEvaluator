@@ -27,27 +27,31 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: FutureBuilder<Widget>(
-          future: _scoreList(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text("Erreur: ${snapshot.error}"));
-            } else if (!snapshot.hasData) {
-              return const Center(child: Text("Aucun score trouvé."));
-            }
-            return snapshot.data!;
-          },
-        ),
+      body: Column(
+        children: [
+          const Text("Liste de tout les Scores:"),
+          Expanded( // Utiliser Expanded pour le ListView
+            child: FutureBuilder<Widget>(
+              future: _scoreList(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text("Erreur: ${snapshot.error}"));
+                } else if (!snapshot.hasData) {
+                  return const Center(child: Text("Aucun score trouvé."));
+                }
+                return snapshot.data!;
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
   Future<Widget> _scoreList() async {
-    mongo.ObjectId userId = mongo.ObjectId.fromHexString('67213c1d50d27b5692000000');
 
-    var result = await getScores(widget.db, userId as mongo.ObjectId? );
+    var result = await getScores(widget.db);
     if (result['success']) {
       print(result);
       List<Map<String, dynamic>> scores = result['data'];
