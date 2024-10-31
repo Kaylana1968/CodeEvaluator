@@ -3,6 +3,8 @@ import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'package:code_evaluator/Controller/category.dart';
 import 'package:code_evaluator/Controller/question.dart';
 
+import '../Model/User.dart';
+
 class TestSelectorPage extends StatefulWidget {
   const TestSelectorPage({super.key,required this.title, required this.db});
 
@@ -17,17 +19,17 @@ class _TestSelectorPageState extends State<TestSelectorPage> {
   mongo.ObjectId? categoryId;
   String? label;
   Future<Map<String, dynamic>>? testResult;
+  User user = User("", "", "", 0, "", "", "", false);
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // Récupère le label depuis les arguments via ModalRoute
-    final labelArg = ModalRoute.of(context)!.settings.arguments as String?;
-    if (labelArg != null && label != labelArg) {
-      label = labelArg;
-
-      // Récupère l'ID de la catégorie en fonction du label
+    final arg = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+    print(arg);
+    if (arg != null) {
+      label = arg['label'];
+      user = arg['user'];
       _fetchCategoryIdAndTests(label!);
     }
   }
@@ -64,7 +66,7 @@ class _TestSelectorPageState extends State<TestSelectorPage> {
                   itemCount: tests.length,
                   itemBuilder: (context, index) {
                     var test = tests[index];
-                    return TestCard(testLabel: test['label']);
+                    return TestCard(testLabel: test['label'], user: user);
                   },
                 );
               } else {
@@ -82,8 +84,9 @@ class _TestSelectorPageState extends State<TestSelectorPage> {
 
 class TestCard extends StatelessWidget {
   final String testLabel;
+  final User user;
 
-  const TestCard({super.key, required this.testLabel});
+  const TestCard({super.key, required this.testLabel, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +95,7 @@ class TestCard extends StatelessWidget {
         Navigator.pushNamed(
           context,
           '/quiz', // Page des questions
-          arguments: testLabel, // Passe le label du test en argument
+          arguments: {'testLabel': testLabel, 'user' : user}, // Passe le label du test en argument
         );
       },
       child: Card(

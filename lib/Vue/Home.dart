@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 70.0),
             ElevatedButton(
-                onPressed: () => (Navigator.pushNamed(context, '/test')),
+                onPressed: () => (Navigator.pushNamed(context, '/test', arguments: user)),
                 child: const Text("Pass a Test")),
             const SizedBox(height: 40.0),
 

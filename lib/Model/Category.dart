@@ -1,10 +1,11 @@
 class Category {
   String _label;
 
-  Category({required this.label});
+
+  Category(this._label);
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
-    label: json["label"],
+    json["label"],
   );
 
   Category.clone(Category other) : _label = other.label;

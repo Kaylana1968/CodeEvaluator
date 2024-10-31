@@ -1,3 +1,4 @@
+import 'package:code_evaluator/Model/User.dart';
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Controller/header.dart';
@@ -16,17 +17,24 @@ class TestPage extends StatefulWidget {
 
 class _TestPageState extends State<TestPage> {
   Future<Map<String, dynamic>>? result;
+  late User user = User("", "", "", 0, "", "", "", false);
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Récupère le user depuis les arguments via ModalRoute
+    final userArg = ModalRoute.of(context)!.settings.arguments as User?;
+    if (userArg != null) {
+      user = userArg;
+    }
     result = CategoryController.getAllCategory(widget.db);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: headerDisplay(context, widget.title),
+      appBar: headerDisplay(context, widget.title, true),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -69,7 +77,7 @@ class _TestPageState extends State<TestPage> {
     String label = dbData.label;
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/test/selector', arguments: label);
+        Navigator.pushNamed(context, '/test/selector', arguments: {'label' :label, 'user' : user});
       },
       child: Card(
         child: Padding(

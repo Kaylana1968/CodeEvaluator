@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:code_evaluator/Controller/profile.dart';
 import 'package:code_evaluator/Controller/question.dart';
 import 'package:code_evaluator/Controller/quiz.dart';
 import 'package:code_evaluator/Model/Test.dart';
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import '../Model/Question.dart';
+import '../Model/User.dart';
 
 class QuizPage extends StatefulWidget {
   final String title;
@@ -17,6 +19,7 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
+  late String testLabel;
   int currentQuestionIndex = 0;
   int totalScore = 0;
   late Timer timer;
@@ -25,16 +28,34 @@ class _QuizPageState extends State<QuizPage> {
   Test? test;
   List<Map<String, dynamic>> questionScores = [];
   List<bool> selectedChoices = [];
+  User user = User("", "", "", 0, "", "", "", false);
 
+  /*
   @override
   void initState() {
     super.initState();
     fetchTestData();
   }
 
+   */
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Récupère le label depuis les arguments via ModalRoute
+    final arg = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+    if (arg != null) {
+      testLabel = arg['testLabel'];
+      user = arg['user'];
+      fetchTestData();
+    }
+  }
+
   void fetchTestData() async {
-    final label = ModalRoute.of(context)!.settings.arguments as String;
-    Map<String, dynamic> result = await getTestByLabel(widget.db, label);
+    print(testLabel);
+    String label = "HTML avancé";
+    Map<String, dynamic> result = await getTestByLabel(widget.db, testLabel);
     test = Test.fromMap(result['data']);
     if (test != null) {
       startTimer();
@@ -128,7 +149,7 @@ class _QuizPageState extends State<QuizPage> {
 
   void saveResults() async {
     final result = {
-      "user": "user_id", // mettre vrai id ici
+      "user": await getUserIdByEmail(widget.db, user.email),
       "test": await getTestIdByLabel(widget.db, test!.label),
       "mark": questionScores,
       "date": DateTime.now(),
