@@ -24,6 +24,19 @@ class _AddTestPageState extends State<AddTestPage> {
   List<Question> existingQuestions = [];
   List<Question> categoryQuestions = [];
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final args = ModalRoute.of(context)?.settings.arguments as User?;
+
+    if (args == null || !args.admin) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacementNamed(context, '/login');
+      });
+    }
+  }
+
   void initVariables() async {
     final categoryResult = await getAllCategory(widget.db);
     categories = categoryResult['data'];

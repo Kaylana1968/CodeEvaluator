@@ -64,9 +64,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.pushNamed(
                     context,
                     '/admin_dashboard',
-                    arguments: {
-                      'userId': user,
-                    },
+                    arguments: user,
                   );
                 },
                 child: const Text("Admin Dashboard"),

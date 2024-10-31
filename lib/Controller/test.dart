@@ -3,12 +3,13 @@ import '../Model/Question.dart';
 
 Future<Map<String, dynamic>> createTest(mongo.Db db, String label,
     List<Question> questions, Map<String, dynamic> category) async {
-  if (questions.any((question) =>
-      question.choices.length < 2 ||
-      !question.choices.any((choice) => choice.isGood))) {
+  if (questions.isEmpty ||
+      questions.any((question) =>
+          question.choices.length < 2 ||
+          !question.choices.any((choice) => choice.isGood))) {
     return {
       "success": false,
-      "message": "A question must have a response and at least 2 choices!"
+      "message": "A test must have questions that have a response and at least 2 choices!"
     };
   }
 
