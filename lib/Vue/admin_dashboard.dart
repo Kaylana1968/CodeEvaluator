@@ -71,13 +71,13 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           };
           tests.add(scoreInfo);
         } else {
-          return const Text('Aucun score disponible pour ce test.');
+          return const Text('No score available for this test.');
         }
       }
 
       // Vérifiez si 'tests' est vide avant de construire la ListView
       if (tests.isEmpty) {
-        return const Text('Aucun test disponible.');
+        return const Text('No score available.');
       }
 
       // Créez une liste de widgets à partir des résultats récupérés
@@ -106,7 +106,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         children: scoreWidgets,
       );
     } else {
-      return const Text('Aucun score disponible.');
+      return const Text('No score available.');
     }
   }
 
@@ -122,6 +122,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             final test = tests[index];
 
             return Card(
+                key: ValueKey(test),
                 margin: const EdgeInsets.all(10.0),
                 child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -129,11 +130,27 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(test['label']),
-                          IconButton(
-                              onPressed: () => Navigator.pushNamed(
-                                  context, "/edit-test",
-                                  arguments: {'user': user!, 'testId': test['_id']}),
-                              icon: const Icon(Icons.edit)),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                  onPressed: () => Navigator.pushNamed(
+                                          context, "/edit-test", arguments: {
+                                        'user': user!,
+                                        'testId': test['_id']
+                                      }),
+                                  icon: const Icon(Icons.edit)),
+                              IconButton(
+                                  onPressed: () async {
+                                    await deleteTest(widget.db, test['_id']);
+
+                                    setState(() {
+                                      tests.removeAt(index);
+                                    });
+                                  },
+                                  icon: const Icon(Icons.delete)),
+                            ],
+                          )
                         ])));
           });
     } else {
