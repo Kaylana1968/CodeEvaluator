@@ -115,24 +115,16 @@ class MyApp extends StatelessWidget {
               ),
           // In lib/main.dart
           // In lib/main.dart
-          "/admin_dashboard": (context) {
-            final args = ModalRoute.of(context)!.settings.arguments
-                as Map<String, dynamic>?;
-            return FutureBuilder<mongo.Db>(
-              future: db,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return AdminDashboardPage(
-                    title: "Admin Dashboard",
-                    db: snapshot.data!,
-                    userId: args?['userId'] ??
-                        mongo.ObjectId(), // Use the passed userId
-                  );
-                }
-                return const CircularProgressIndicator();
-              },
-            );
-          },
+          "/admin_dashboard": (context) => FutureBuilder<mongo.Db>(
+            future: db,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return AdminDashboardPage(
+                    title: "Admin dashboard", db: snapshot.data!);
+              }
+              return const CircularProgressIndicator();
+            },
+          ),
         });
   }
 }

@@ -23,7 +23,7 @@ class _TestPageState extends State<TestPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: headerDisplay(context, widget.title),
+        appBar: headerDisplay(context, widget.title,true),
         body: Center(
           child: 
             Column(

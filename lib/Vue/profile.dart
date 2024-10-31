@@ -31,7 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late Map<String, dynamic> result;
   late List<Map<String, dynamic>> scores;
 
-  User userghg = User("monNom", "monPrenom", "password", 4, "monMail@gmail.com", "maMaison", "maMotivation", false);
+  User user = User("monNom", "monPrenom", "password", 4, "monMail@gmail.com", "maMaison", "maMotivation", false);
 
   Widget modifyAddress() {
     Map<String, dynamic> result;
@@ -98,11 +98,6 @@ class _ProfilePageState extends State<ProfilePage> {
         } else {
           return const Text('Aucun score disponible pour ce test.');
         }
-      }
-
-      // Vérifiez si 'tests' est vide avant de construire la ListView
-      if (tests.isEmpty) {
-        return const Text('Aucun test disponible.');
       }
 
       // Créez une liste de widgets à partir des résultats récupérés
@@ -185,11 +180,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     Icons.person,
                     size: 50,
                   ),
-                  Text("${userghg .firstName} ${userghg .lastName}"),
-                  Text(userghg .age.toString()),
-                  Text(userghg .address),
-                  Text(userghg .email),
-                  Text(userghg .motivation),
+                  Text("${user.firstName} ${user.lastName}"),
+                  Text(user.age.toString()),
+                  Text(user.address),
+                  Text(user.email),
+                  Text(user.motivation),
                 ],
               ),
             ),
